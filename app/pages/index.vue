@@ -1,5 +1,5 @@
 <template>
-  <div>INDEX</div>
+  <HeroSection />
 </template>
 
 <script setup lang="ts"></script>
