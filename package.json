@@ -11,18 +11,28 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
-    "lint:fix": "oxlint --fix"
+    "lint:fix": "oxlint --fix",
+    "db:generate": "drizzle-kit generate --config=layers/shared/drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config=layers/shared/drizzle.config.ts",
+    "db:push": "drizzle-kit push --config=layers/shared/drizzle.config.ts",
+    "db:studio": "drizzle-kit studio --config=layers/shared/drizzle.config.ts"
   },
   "dependencies": {
+    "@iconify-json/lucide": "^1.2.101",
     "@nuxt/eslint": "1.15.2",
+    "@nuxt/image": "2.0.0",
     "@nuxt/ui": "4.6.0",
+    "@paralleldrive/cuid2": "^3.3.0",
+    "drizzle-orm": "^0.45.2",
     "nuxt": "^4.4.2",
+    "postgres": "^3.4.9",
     "tailwindcss": "^4.2.2",
     "vue": "^3.5.31",
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^10.1.0",
     "eslint-plugin-oxlint": "^1.58.0",
     "oxfmt": "^0.43.0",

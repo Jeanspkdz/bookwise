@@ -1,0 +1,22 @@
+import { createId } from '@paralleldrive/cuid2'
+import { pgTable } from 'drizzle-orm/pg-core'
+import * as t from 'drizzle-orm/pg-core'
+
+export const bookSchema = pgTable('book', {
+  id: t
+    .text()
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  name: t.text().notNull(),
+  description: t.text().notNull(),
+  summary: t.text().notNull(),
+  author: t.text().notNull(),
+  category: t.text().notNull(),
+  rating: t.real().notNull().default(0),
+  totalBooks: t.integer().notNull().default(0),
+  availableBooks: t.integer().notNull().default(0),
+  imageUrl: t.text().notNull(),
+  videoUrl: t.text().notNull(),
+  createdAt: t.timestamp().notNull().defaultNow(),
+  updatedAt: t.timestamp().notNull().defaultNow(),
+})

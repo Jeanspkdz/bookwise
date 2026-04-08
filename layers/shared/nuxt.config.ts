@@ -9,4 +9,27 @@ export default defineNuxtConfig({
       prefix: 'Shared',
     },
   ],
+  runtimeConfig: {
+    databaseUrl: 'DEFAULT_VALUE',
+  },
+  icon: {
+    clientBundle: {
+      scan: true,
+      includeCustomCollections: true,
+    },
+    // provider: 'server',
+    customCollections: [
+      {
+        prefix: 'jpkdz',
+        dir: join(import.meta.dirname, 'app', 'assets', 'icons'),
+      },
+    ],
+  },
+  fonts: {
+    defaults: {
+      weights: [400, 500, 600, 700],
+      styles: ['normal', 'italic'],
+      subsets: ['latin-ext', 'latin'],
+    },
+  },
 })
