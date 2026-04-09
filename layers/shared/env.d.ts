@@ -1,8 +1,6 @@
-declare global {
-  namespace NodeJS {
-    interface ProcessEnv {
-      NUXT_DATABASE_URL: string
-    }
+//script
+namespace NodeJS {
+  interface ProcessEnv {
+    NUXT_DATABASE_URL?: string
   }
 }
-export {}

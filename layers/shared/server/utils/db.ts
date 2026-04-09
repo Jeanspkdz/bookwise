@@ -1,7 +1,12 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 
-const client = postgres(process.env.NUXT_DATABASE_URL, { prepare: false })
+const { NUXT_DATABASE_URL } = process.env
+if (!NUXT_DATABASE_URL) {
+  throw Error('DatabaseUrl not found')
+}
+
+const client = postgres(NUXT_DATABASE_URL, { prepare: false })
 export const db = drizzle({
   client,
 })

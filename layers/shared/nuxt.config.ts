@@ -1,5 +1,4 @@
-import { join } from 'node:path'
-
+import { join, resolve } from 'node:path'
 export default defineNuxtConfig({
   css: [join(import.meta.dirname, 'app', 'assets', 'main.css')],
   modules: ['@nuxt/ui'],
@@ -17,7 +16,6 @@ export default defineNuxtConfig({
       scan: true,
       includeCustomCollections: true,
     },
-    // provider: 'server',
     customCollections: [
       {
         prefix: 'jpkdz',
@@ -30,6 +28,21 @@ export default defineNuxtConfig({
       weights: [400, 500, 600, 700],
       styles: ['normal', 'italic'],
       subsets: ['latin-ext', 'latin'],
+    },
+  },
+  typescript: {
+    nodeTsConfig: {
+      include: [
+        resolve(import.meta.dirname, 'drizzle.config.ts'), // node types
+        resolve(import.meta.dirname, '*.d.ts'),
+      ],
+    },
+  },
+  nitro: {
+    typescript: {
+      tsConfig: {
+        include: [resolve(import.meta.dirname, '*.d.ts')],
+      },
     },
   },
 })
