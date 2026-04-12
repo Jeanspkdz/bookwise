@@ -31,8 +31,8 @@
       </div>
 
       <div class="relative flex-5/12">
-        <SharedBookImage class="relative z-10" />
-        <SharedBookImage class="absolute top-0 left-[35%] translate-y-12 rotate-10 blur" />
+        <BookCatalogBookImage class="relative z-10" />
+        <BookCatalogBookImage class="absolute top-0 left-[35%] translate-y-12 rotate-10 blur" />
       </div>
     </div>
   </UContainer>

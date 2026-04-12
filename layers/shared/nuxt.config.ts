@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     databaseUrl: 'DEFAULT_VALUE',
   },
   icon: {
+    mode: 'svg',
     clientBundle: {
       scan: true,
       includeCustomCollections: true,
@@ -20,6 +21,7 @@ export default defineNuxtConfig({
       {
         prefix: 'jpkdz',
         dir: join(import.meta.dirname, 'app', 'assets', 'icons'),
+        recursive: true,
       },
     ],
   },

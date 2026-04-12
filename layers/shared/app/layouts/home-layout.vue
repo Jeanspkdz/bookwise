@@ -1,5 +1,5 @@
 <template>
-  <UApp>
+  <div>
     <SharedHeader :current-path="currentPath" />
 
     <UMain>
@@ -7,7 +7,7 @@
     </UMain>
 
     <SharedFooter />
-  </UApp>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -16,7 +16,7 @@ const currentPath = computed(() => route.path)
 </script>
 
 <style scoped>
-:global(body) {
+body {
   background-color: #111624;
   background-image:
     radial-gradient(ellipse at 40% 15%, #1a2a5e 0%, transparent 60%),
