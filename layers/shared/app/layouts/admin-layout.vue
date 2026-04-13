@@ -10,6 +10,7 @@
       :default-size="17"
       :min-size="15"
       :max-size="25"
+      toggle-side="right"
     >
       <template #header="{ collapsed }">
         <template v-if="!collapsed">
