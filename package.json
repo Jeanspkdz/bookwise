@@ -23,6 +23,7 @@
     "@nuxt/image": "2.0.0",
     "@nuxt/ui": "4.6.0",
     "@paralleldrive/cuid2": "^3.3.0",
+    "@tanstack/vue-table": "^8.21.3",
     "drizzle-orm": "1.0.0-beta.20-afec359",
     "nuxt": "^4.4.2",
     "postgres": "^3.4.9",

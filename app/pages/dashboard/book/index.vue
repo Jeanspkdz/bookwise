@@ -40,6 +40,7 @@
           <UButton
             color="primary"
             size="md"
+            to="/admin/book/create"
             label="Create a new Book"
             icon="jpkdz-admin-plus"
             class="w-full justify-center px-2.5 py-3 sm:w-auto"
@@ -64,7 +65,6 @@
 <script setup lang="ts">
 definePageMeta({
   colorMode: 'light',
-  layout: 'admin-layout',
 })
 
 const { books, pending, error } = useBooks()
