@@ -4,6 +4,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxt/eslint', '@nuxt/image'],
   routeRules: {
-    '/dashboard/**': { appLayout: 'admin-layout' },
+    '/dashboard/**': { appLayout: 'dashboard-layout' },
   },
 })
