@@ -29,6 +29,7 @@ export interface Book {
   availableBooks: number
   imageUrl: string
   videoUrl: string
+  coverColor: string
   createdAt: TimestampValue
   updatedAt: TimestampValue
 }

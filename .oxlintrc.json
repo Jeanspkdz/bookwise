@@ -438,7 +438,7 @@
         "vue/valid-define-emits": "error",
         "vue/valid-define-props": "error",
         "vue/no-multiple-slot-args": "warn",
-        "vue/no-required-prop-with-default": "warn",
+        "vue/no-required-prop-with-default": "warn"
       },
       "plugins": ["vue"]
     },

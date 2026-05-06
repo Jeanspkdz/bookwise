@@ -11,7 +11,8 @@ if (!NUXT_DATABASE_URL) {
 const currentDir = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-  out: join(currentDir, 'server', 'db', 'migrations'),
+  // out: join(currentDir, 'server', 'db', 'migrations'),
+  out: './layers/shared/server/db/migrations',
   schema: posix.join('layers', 'shared', 'server', 'db', 'schema', '*.ts'), //glob pattern
   dialect: 'postgresql',
   dbCredentials: {

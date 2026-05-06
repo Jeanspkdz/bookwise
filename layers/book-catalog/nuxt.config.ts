@@ -7,4 +7,10 @@ export default defineNuxtConfig({
       prefix: 'BookCatalog',
     },
   ],
+  modules: ['nuxt-uploadthing'],
+  uploadthing: {
+    fileRouterPath: '~~/layers/book-catalog/server/utils/uploadthing',
+    fileRouterExport: 'uploadRouter',
+    useTailwindStyles: true,
+  },
 })

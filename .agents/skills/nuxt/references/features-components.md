@@ -20,13 +20,25 @@ Optimized link component with prefetching:
   <NuxtLink :to="{ name: 'posts-id', params: { id: 1 } }">Post 1</NuxtLink>
 
   <!-- External link (opens in new tab) -->
-  <NuxtLink to="https://nuxt.com" external>Nuxt</NuxtLink>
+  <NuxtLink
+    to="https://nuxt.com"
+    external
+    >Nuxt</NuxtLink
+  >
 
   <!-- Disable prefetching -->
-  <NuxtLink to="/heavy-page" :prefetch="false">Heavy Page</NuxtLink>
+  <NuxtLink
+    to="/heavy-page"
+    :prefetch="false"
+    >Heavy Page</NuxtLink
+  >
 
   <!-- Replace history instead of push -->
-  <NuxtLink to="/page" replace>Replace</NuxtLink>
+  <NuxtLink
+    to="/page"
+    replace
+    >Replace</NuxtLink
+  >
 
   <!-- Custom active class -->
   <NuxtLink
@@ -64,7 +76,10 @@ Pass props to page:
 
 ```vue
 <template>
-  <NuxtPage :page-key="route.fullPath" :foobar="123" />
+  <NuxtPage
+    :page-key="route.fullPath"
+    :foobar="123"
+  />
 </template>
 ```
 
@@ -91,7 +106,7 @@ Dynamic layout:
 </template>
 
 <script setup>
-const layout = computed(() => isAdmin ? 'admin' : 'default')
+const layout = computed(() => (isAdmin ? 'admin' : 'default'))
 </script>
 ```
 
@@ -184,7 +199,10 @@ Server components (experimental):
 
 ```vue
 <template>
-  <NuxtIsland name="HeavyComponent" :props="{ data: complexData }" />
+  <NuxtIsland
+    name="HeavyComponent"
+    :props="{ data: complexData }"
+  />
 </template>
 ```
 
@@ -195,7 +213,11 @@ Optimized images (requires `@nuxt/image` module):
 ```vue
 <template>
   <!-- Basic optimized image -->
-  <NuxtImg src="/images/hero.jpg" width="800" height="600" />
+  <NuxtImg
+    src="/images/hero.jpg"
+    width="800"
+    height="600"
+  />
 
   <!-- Responsive with srcset -->
   <NuxtImg
@@ -221,7 +243,10 @@ Render content outside component tree:
   <button @click="showModal = true">Open Modal</button>
 
   <Teleport to="body">
-    <div v-if="showModal" class="modal">
+    <div
+      v-if="showModal"
+      class="modal"
+    >
       <p>Modal content</p>
       <button @click="showModal = false">Close</button>
     </div>
@@ -255,7 +280,7 @@ Accessibility: announces page changes to screen readers:
 </template>
 ```
 
-<!-- 
+<!--
 Source references:
 - https://nuxt.com/docs/api/components/nuxt-link
 - https://nuxt.com/docs/api/components/nuxt-page

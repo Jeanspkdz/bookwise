@@ -59,6 +59,7 @@ export default defineNuxtConfig({
 ```
 
 With `pathPrefix: false`:
+
 ```
 components/base/Button.vue → <Button />
 ```
@@ -80,6 +81,7 @@ const showChart = ref(false)
 ```
 
 Benefits:
+
 - Reduces initial bundle size
 - Code-splits component into separate chunk
 - Loads on-demand
@@ -170,7 +172,10 @@ Never hydrate (static only):
 
 ```vue
 <template>
-  <LazyChart hydrate-on-visible @hydrated="onChartReady" />
+  <LazyChart
+    hydrate-on-visible
+    @hydrated="onChartReady"
+  />
 </template>
 
 <script setup>
@@ -321,7 +326,7 @@ export default defineNuxtModule({
 })
 ```
 
-<!-- 
+<!--
 Source references:
 - https://nuxt.com/docs/directory-structure/app/components
 - https://nuxt.com/docs/guide/concepts/auto-imports#auto-imported-components

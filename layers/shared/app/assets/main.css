@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'nuxt-uploadthing';
 @import '@nuxt/ui';
 
 :root {
@@ -33,13 +34,13 @@
   --ui-secondary: var(--ui-color-secondary-50);
 }
 
-[data-theme="dashboard"] {
-  --ui-color-primary-50: #F8F8FF;
+[data-theme='dashboard'] {
+  --ui-color-primary-50: #f8f8ff;
   --ui-color-primary-100: #e6e8ef;
   --ui-color-primary-200: #c6cbe2;
   --ui-color-primary-300: #9ba5d5;
   --ui-color-primary-400: #6779cb;
-  --ui-color-primary-500: #25388C;
+  --ui-color-primary-500: #25388c;
   --ui-color-primary-600: #2a3f9d;
   --ui-color-primary-700: #223277;
   --ui-color-primary-800: #1a2452;
@@ -48,8 +49,7 @@
   --ui-primary: var(--ui-color-primary-500);
 }
 
-
 @theme {
-  --font-bebas: "Bebas Neue", sans-serif;
-  --font-plex:  "IBM Plex Sans Condensed", sans-serif;
+  --font-bebas: 'Bebas Neue', sans-serif;
+  --font-plex: 'IBM Plex Sans Condensed', sans-serif;
 }

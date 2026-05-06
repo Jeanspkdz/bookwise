@@ -69,13 +69,14 @@
 </template>
 
 <script setup lang="ts">
+import type { NavigationMenuItem } from '@nuxt/ui'
+
 useHead({
   htmlAttrs: {
     'data-theme': 'dashboard',
   },
 })
 
-import type { NavigationMenuItem } from '@nuxt/ui'
 const navItems: NavigationMenuItem[] = [
   {
     label: 'Home',

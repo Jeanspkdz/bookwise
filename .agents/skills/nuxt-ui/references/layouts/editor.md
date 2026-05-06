@@ -29,13 +29,13 @@ const content = ref({
     {
       type: 'heading',
       attrs: { level: 1 },
-      content: [{ type: 'text', text: 'Hello World' }]
+      content: [{ type: 'text', text: 'Hello World' }],
     },
     {
       type: 'paragraph',
-      content: [{ type: 'text', text: 'Start writing...' }]
-    }
-  ]
+      content: [{ type: 'text', text: 'Start writing...' }],
+    },
+  ],
 })
 </script>
 
@@ -43,19 +43,25 @@ const content = ref({
   <UPage>
     <UPageHeader title="Editor">
       <template #actions>
-        <UButton label="Save" icon="i-lucide-save" />
+        <UButton
+          label="Save"
+          icon="i-lucide-save"
+        />
       </template>
     </UPageHeader>
 
     <UPageBody>
-      <UEditor v-slot="{ editor }" v-model="content">
+      <UEditor
+        v-slot="{ editor }"
+        v-model="content"
+      >
         <UEditorToolbar :editor="editor" />
         <UEditorSuggestionMenu :editor="editor" />
         <UEditorMentionMenu
           :editor="editor"
           :items="[
             { label: 'Benjamin', avatar: { src: 'https://github.com/benjamincanac.png' } },
-            { label: 'Sébastien', avatar: { src: 'https://github.com/atinux.png' } }
+            { label: 'Sébastien', avatar: { src: 'https://github.com/atinux.png' } },
           ]"
         />
         <UEditorEmojiMenu :editor="editor" />
@@ -116,18 +122,27 @@ Combine with Dashboard components for a multi-document editor with a sidebar.
 ```vue [layouts/editor.vue]
 <template>
   <UDashboardGroup>
-    <UDashboardSidebar collapsible resizable>
+    <UDashboardSidebar
+      collapsible
+      resizable
+    >
       <template #header>
-        <UButton icon="i-lucide-plus" label="New document" block />
+        <UButton
+          icon="i-lucide-plus"
+          label="New document"
+          block
+        />
       </template>
 
       <template #default>
         <UNavigationMenu
-          :items="documents.map(doc => ({
-            label: doc.title,
-            to: `/editor/${doc.id}`,
-            icon: 'i-lucide-file-text'
-          }))"
+          :items="
+            documents.map((doc) => ({
+              label: doc.title,
+              to: `/editor/${doc.id}`,
+              icon: 'i-lucide-file-text',
+            }))
+          "
           orientation="vertical"
         />
       </template>
@@ -150,13 +165,19 @@ const content = ref({ type: 'doc', content: [] })
     <template #header>
       <UDashboardNavbar title="Editor">
         <template #right>
-          <UButton label="Save" icon="i-lucide-save" />
+          <UButton
+            label="Save"
+            icon="i-lucide-save"
+          />
         </template>
       </UDashboardNavbar>
     </template>
 
     <UContainer class="py-8">
-      <UEditor v-slot="{ editor }" v-model="content">
+      <UEditor
+        v-slot="{ editor }"
+        v-model="content"
+      >
         <UEditorToolbar :editor="editor" />
         <UEditorSuggestionMenu :editor="editor" />
         <UEditorEmojiMenu :editor="editor" />
