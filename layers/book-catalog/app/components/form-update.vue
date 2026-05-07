@@ -1,8 +1,8 @@
 <template>
   <UForm
-    ref="book-form-create"
+    ref="book-form-update"
     v-slot="{ loading }"
-    :schema="createBookSchema"
+    :schema="updateBookSchema"
     :state="state"
     :validate-on="['change', 'blur', 'input']"
     class="border-default mx-auto w-xl space-y-5 rounded-2xl border bg-white p-5 shadow-xl"
@@ -91,14 +91,29 @@
       label="Book Image"
       name="bookImage"
     >
+      <div
+        v-if="initialImageUrl"
+        class="mb-2 flex justify-center"
+      >
+        <UButton
+          size="xs"
+          class="mx-auto justify-center"
+          color="neutral"
+          variant="subtle"
+          label="Current Image"
+          icon="i-lucide-image"
+          @click="openMediaUrl(initialImageUrl)"
+        />
+      </div>
+
       <UFileUpload
         v-model="state.bookImage"
         variant="area"
         accept="image/*"
-        label="Upload an image"
+        label="Upload a new image"
         color="primary"
         highlight
-        description="Choose a book cover image. Accepted formats: JPG, PNG, WEBP. Max size: 10MB"
+        description="Keep empty to preserve current image. Accepted formats: JPG, PNG, WEBP. Max size: 10MB"
         class="w-full"
         :ui="{
           base: 'w-full justify-center',
@@ -135,14 +150,28 @@
       label="Book Video"
       name="bookVideo"
     >
+      <div
+        v-if="initialVideoUrl"
+        class="mb-2 flex justify-center"
+      >
+        <UButton
+          size="xs"
+          color="neutral"
+          variant="subtle"
+          label="Current Video"
+          icon="i-lucide-video"
+          @click="openMediaUrl(initialVideoUrl)"
+        />
+      </div>
+
       <UFileUpload
         v-model="state.bookVideo"
         variant="area"
         accept="video/*"
         color="primary"
         highlight
-        label="Upload a video"
-        description="Choose a short video for the book presentation (MP4, WEBM). Max size: 20MB"
+        label="Upload a new video"
+        description="Keep empty to preserve current video. Accepted formats: MP4, WEBM. Max size: 20MB"
         class="w-full"
         :ui="{ base: 'w-full justify-center' }"
         size="lg"
@@ -165,9 +194,10 @@
     </UFormField>
 
     <UButton
-      label="Create Book"
+      label="Update Book"
       type="submit"
       class="w-full justify-center"
+      :disabled="!formRef?.dirty"
     />
   </UForm>
 </template>
@@ -175,39 +205,46 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
 
+const formRef = useTemplateRef('book-form-update')
+
 const props = defineProps<{
-  onCreate: (payload: CreateBookSchema) => Promise<void>
+  initialValues: {
+    name: string
+    author: string
+    category: string
+    description: string
+    rating: number
+    totalBooks: number
+    coverColor: string
+    summary: string
+    imageUrl?: string
+    videoUrl?: string
+  }
+  onUpdate: (payload: UpdateBookSchema) => Promise<void>
 }>()
 
-const state: CreateBookSchema = reactive({
-  author: '',
-  bookImage: null as unknown as File,
-  bookVideo: null as unknown as File,
-  description: '',
-  rating: 3,
-  category: '',
-  coverColor: '#ffffff',
-  summary: '',
-  totalBooks: 1,
-  name: '',
+const state: UpdateBookSchema = reactive({
+  author: props.initialValues.author,
+  bookImage: undefined,
+  bookVideo: undefined,
+  description: props.initialValues.description,
+  rating: props.initialValues.rating,
+  category: props.initialValues.category,
+  coverColor: props.initialValues.coverColor,
+  summary: props.initialValues.summary,
+  totalBooks: props.initialValues.totalBooks,
+  name: props.initialValues.name,
 })
 
-const resetForm = () => {
-  state.author = ''
-  state.bookImage = null as unknown as File
-  state.bookVideo = null as unknown as File
-  state.description = ''
-  state.rating = 3
-  state.category = ''
-  state.coverColor = '#ffffff'
-  state.summary = ''
-  state.totalBooks = 1
-  state.name = ''
+const initialImageUrl = computed(() => props.initialValues.imageUrl)
+const initialVideoUrl = computed(() => props.initialValues.videoUrl)
+
+const openMediaUrl = (url: string) => {
+  window.open(url, '_blank', 'noopener,noreferrer')
 }
 
-const handleSubmit = async (e: FormSubmitEvent<CreateBookSchema>) => {
-  await props.onCreate(e.data)
-  resetForm()
+const handleSubmit = async (e: FormSubmitEvent<UpdateBookSchema>) => {
+  await props.onUpdate(e.data)
 }
 </script>
 

@@ -1,47 +1,42 @@
-import type { Result } from '~~/layers/shared/shared/result'
-
-export interface BookItem {
-  id: string
-  name: string
-  author: string
-  category: string
-  imageUrl: string
-  createdAt: string
-}
-
-export interface CreateBookInput {
-  name: string
-  description: string
-  summary: string
-  author: string
-  category: string
-  rating: number
-  totalBooks: number
-  availableBooks: number
-  imageUrl: string
-  videoUrl: string
-  coverColor: string
-}
-
-export interface CreateBookResponse {
-  createdBook: BookItem
-}
+import type { Result } from '~~/layers/shared/shared/types/result'
 
 export function useBooks() {
-  const { data, pending, error } = useFetch<BookItem[]>('/api/book', {
+  const { data, pending, error } = useFetch<Book[]>('/api/book', {
     method: 'GET',
     key: 'admin-books',
     lazy: true,
     default: () => [],
   })
+  const { startUpload: startImageUpload } = useUploadThing('imageUploaders')
+  const { startUpload: startVideoUpload } = useUploadThing('videoUploaders')
 
   const createBook = async (
-    payload: CreateBookInput,
+    payload: CreateBookPayload,
   ): Promise<Result<CreateBookResponse, string>> => {
     try {
-      const response = await $fetch<CreateBookResponse>('/api/book', {
+      const [imageUploadResult, videoUploadResult] = await Promise.all([
+        startImageUpload([payload.bookImage]),
+        startVideoUpload([payload.bookVideo]),
+      ])
+
+      const imageUrl = imageUploadResult?.[0]?.ufsUrl
+      const videoUrl = videoUploadResult?.[0]?.ufsUrl
+
+      const response = await $fetch('/api/book', {
         method: 'POST',
-        body: payload,
+        body: {
+          name: payload.name,
+          description: payload.description,
+          summary: payload.summary,
+          author: payload.author,
+          category: payload.category,
+          rating: payload.rating,
+          totalBooks: payload.totalBooks,
+          availableBooks: payload.totalBooks,
+          imageUrl,
+          videoUrl,
+          coverColor: payload.coverColor,
+        },
       })
 
       return {
@@ -56,10 +51,31 @@ export function useBooks() {
     }
   }
 
+  const deleteBook = async (id: DeleteBookPayload): Promise<Result<DeleteBookResponse, string>> => {
+    try {
+      const response = await $fetch(`/api/book/${id}`, {
+        method: 'DELETE',
+      })
+
+      data.value = (data.value ?? []).filter((book) => book.id !== response.deletedBook.id)
+
+      return {
+        type: 'success',
+        data: response,
+      }
+    } catch {
+      return {
+        type: 'failure',
+        error: 'Something went wrong. Failed to delete book',
+      }
+    }
+  }
+
   return {
     books: computed(() => data.value ?? []),
     pending,
     error,
     createBook,
+    deleteBook,
   }
 }

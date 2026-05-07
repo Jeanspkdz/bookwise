@@ -1,6 +1,6 @@
+import { z } from 'zod'
 import { bookSchema } from '~~/layers/shared/server/db/schema/book.schema'
 import { bookInsertSchema } from '~~/layers/shared/server/utils/validator'
-import {z} from 'zod'
 
 const routeBodyValidator = bookInsertSchema.clone()
 
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 400,
       statusMessage: 'Invalid request body',
-      data: z.prettifyError(routeBodyValidationResult.error)
+      data: z.prettifyError(routeBodyValidationResult.error),
     })
   }
 
@@ -46,7 +46,14 @@ export default defineEventHandler(async (event) => {
     })
     .returning()
 
+  if (!createdBook) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Book Creation Failed',
+    })
+  }
+
   setResponseStatus(event, 201)
 
-  return {createdBook}
+  return { createdBook }
 })

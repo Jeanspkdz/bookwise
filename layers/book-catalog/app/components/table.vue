@@ -88,7 +88,7 @@
       <template #name-cell="{ row }">
         <div class="flex items-center gap-3">
           <NuxtImg
-            :src="row.original.imageUrl || '/book-cover.webp'"
+            :src="row.original.imageUrl"
             alt="Book cover"
             class="h-10 w-8 rounded-sm object-cover"
           />
@@ -106,7 +106,7 @@
         />
       </template>
 
-      <template #actions-cell>
+      <template #actions-cell="{ row }">
         <div class="flex items-center gap-1">
           <UButton
             icon="jpkdz-admin-edit"
@@ -114,14 +114,41 @@
             variant="ghost"
             size="md"
             aria-label="Edit book"
+            :to="`/dashboard/book/${row.original.id}/update`"
           />
-          <UButton
-            icon="jpkdz-admin-trash"
-            color="error"
-            variant="ghost"
-            size="md"
-            aria-label="Delete book"
-          />
+          <UModal title="Delete book">
+            <UButton
+              icon="jpkdz-admin-trash"
+              color="error"
+              variant="ghost"
+              size="md"
+              aria-label="Delete book"
+            />
+
+            <template #description>
+              <p class="text-toned text-sm">
+                Are you sure you want to permanently delete
+                <span class="text-highlighted font-medium">{{ row.original.name }}</span
+                >?
+              </p>
+            </template>
+
+            <template #footer="{ close }">
+              <div class="flex w-full justify-end">
+                <UButton
+                  color="error"
+                  variant="solid"
+                  label="Delete"
+                  @click="
+                    () => {
+                      confirmDeleteBook(row.original.id)
+                      close()
+                    }
+                  "
+                />
+              </div>
+            </template>
+          </UModal>
         </div>
       </template>
     </UTable>
@@ -153,17 +180,20 @@
 import type { TableColumn } from '@nuxt/ui'
 import type { PaginationState, SortingState } from '@tanstack/vue-table'
 import { getPaginationRowModel } from '@tanstack/vue-table'
-import type { BookItem } from '~~/layers/book-catalog/app/composables/useBooks'
 
 const { books } = defineProps<{
-  books: BookItem[]
+  books: Book[]
   pending: boolean
   error: unknown
 }>()
 
+const emit = defineEmits<{
+  deleteBook: Parameters<DeleteBookEventHandler>
+}>()
+
 const tableRef = useTemplateRef('booksTable')
 
-const columns: TableColumn<BookItem>[] = [
+const columns: TableColumn<Book>[] = [
   { accessorKey: 'name', header: 'Book Title', sortingFn: 'textCaseSensitive' },
   { accessorKey: 'author', header: 'Author', sortingFn: 'textCaseSensitive' },
   { accessorKey: 'category', header: 'Genre', sortingFn: 'textCaseSensitive' },
@@ -200,6 +230,10 @@ const getSortIcon = (direction: false | 'asc' | 'desc') => {
   }
 
   return 'i-lucide-arrow-up-down'
+}
+
+const confirmDeleteBook = (bookId: string) => {
+  emit('deleteBook', bookId)
 }
 </script>
 

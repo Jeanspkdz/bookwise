@@ -45,54 +45,13 @@ definePageMeta({
   colorMode: 'light',
 })
 
-interface CreateBookFormPayload {
-  name: string
-  description: string
-  summary: string
-  author: string
-  category: string
-  rating: number
-  totalBooks: number
-  coverColor: string
-  bookImage: File
-  bookVideo: File
-}
-
 const { createBook } = useBooks()
-const { startUpload: startImageUpload } = useUploadThing('imageUploaders')
-const { startUpload: startVideoUpload } = useUploadThing('videoUploaders')
+
 const toast = useToast()
 
-const handleCreateBook = async (payload: CreateBookFormPayload) => {
-  const [imageUploadResult, videoUploadResult] = await Promise.all([
-    startImageUpload([payload.bookImage]),
-    startVideoUpload([payload.bookVideo]),
-  ])
-
-  const imageUrl = imageUploadResult?.[0]?.ufsUrl
-  const videoUrl = videoUploadResult?.[0]?.ufsUrl
-
-  if (!imageUrl || !videoUrl) {
-    toast.add({
-      title: 'Book creation failed',
-      description: 'Image and video uploads are required',
-      color: 'error',
-    })
-    return
-  }
-
+const handleCreateBook: CreateBookEventHandler = async (payload) => {
   const result = await createBook({
-    name: payload.name,
-    description: payload.description,
-    summary: payload.summary,
-    author: payload.author,
-    category: payload.category,
-    rating: payload.rating,
-    totalBooks: payload.totalBooks,
-    availableBooks: payload.totalBooks,
-    imageUrl,
-    videoUrl,
-    coverColor: payload.coverColor,
+    ...payload,
   })
 
   if (result.type === 'success') {

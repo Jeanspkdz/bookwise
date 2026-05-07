@@ -55,6 +55,7 @@
             :books="books"
             :pending="pending"
             :error="error"
+            @delete-book="handleDeleteBook"
           />
         </div>
       </div>
@@ -67,5 +68,25 @@ definePageMeta({
   colorMode: 'light',
 })
 
-const { books, pending, error } = useBooks()
+const toast = useToast()
+const { books, pending, error, deleteBook } = useBooks()
+
+const handleDeleteBook: DeleteBookEventHandler = async (bookId) => {
+  const result = await deleteBook(bookId)
+
+  if (result.type === 'success') {
+    toast.add({
+      title: 'Book deleted',
+      description: result.data.deletedBook.name,
+      color: 'primary',
+    })
+    return
+  }
+
+  toast.add({
+    title: 'Book deletion failed',
+    description: result.error,
+    color: 'error',
+  })
+}
 </script>
