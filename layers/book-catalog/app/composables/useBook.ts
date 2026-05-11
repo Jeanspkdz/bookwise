@@ -1,12 +1,10 @@
 import { toValue } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
-import type { UpdateBookPayload } from '~~/layers/book-catalog/app/utils/types'
-import type { Result } from '~~/layers/shared/shared/types/result'
 
 export function useBook(id: MaybeRefOrGetter<Book['id']>) {
   const bookId = computed(() => toValue(id))
-  const { startUpload: startImageUpload } = useUploadThing('imageUploaders')
-  const { startUpload: startVideoUpload } = useUploadThing('videoUploaders')
+  const { startUpload: startImageUpload } = useUploadThing('bookImage')
+  const { startUpload: startVideoUpload } = useUploadThing('bookVideo')
 
   const {
     data: book,
@@ -38,6 +36,8 @@ export function useBook(id: MaybeRefOrGetter<Book['id']>) {
 
       if (payload.bookImage) {
         const imageUploadResult = await startImageUpload([payload.bookImage])
+
+        console.log('image upload', imageUploadResult?.[0])
         const uploadedImageUrl = imageUploadResult?.[0]?.ufsUrl
 
         if (!uploadedImageUrl) {
@@ -64,7 +64,7 @@ export function useBook(id: MaybeRefOrGetter<Book['id']>) {
         videoUrl = uploadedVideoUrl
       }
 
-      const response = await $fetch(`/api/book/${resolvedId}`, {
+      const response = await $fetch<UpdateBookResponse>(`/api/book/${resolvedId}`, {
         method: 'PUT',
         body: {
           name: payload.name,

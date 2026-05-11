@@ -7,8 +7,8 @@ export function useBooks() {
     lazy: true,
     default: () => [],
   })
-  const { startUpload: startImageUpload } = useUploadThing('imageUploaders')
-  const { startUpload: startVideoUpload } = useUploadThing('videoUploaders')
+  const { startUpload: startImageUpload } = useUploadThing('bookImage')
+  const { startUpload: startVideoUpload } = useUploadThing('bookVideo')
 
   const createBook = async (
     payload: CreateBookPayload,
@@ -53,7 +53,7 @@ export function useBooks() {
 
   const deleteBook = async (id: DeleteBookPayload): Promise<Result<DeleteBookResponse, string>> => {
     try {
-      const response = await $fetch(`/api/book/${id}`, {
+      const response = await $fetch<DeleteBookResponse>(`/api/book/${id}`, {
         method: 'DELETE',
       })
 

@@ -1,6 +1,8 @@
 import { join, resolve } from 'node:path'
+
+import { vite as vidstack } from 'vidstack/plugins'
 export default defineNuxtConfig({
-  css: [join(import.meta.dirname, 'app', 'assets', 'main.css')],
+  css: [join(import.meta.dirname, 'app', 'assets', 'css', 'main.css')],
   modules: ['@nuxt/ui'],
   components: [
     {
@@ -8,6 +10,14 @@ export default defineNuxtConfig({
       prefix: 'Shared',
     },
   ],
+  vite: {
+    plugins: [vidstack()],
+  },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag.startsWith('media-'),
+    },
+  },
   runtimeConfig: {
     databaseUrl: 'DEFAULT_VALUE',
   },

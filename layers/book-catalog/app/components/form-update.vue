@@ -91,10 +91,7 @@
       label="Book Image"
       name="bookImage"
     >
-      <div
-        v-if="initialImageUrl"
-        class="mb-2 flex justify-center"
-      >
+      <div class="mb-2 flex justify-center">
         <UButton
           size="xs"
           class="mx-auto justify-center"
@@ -150,10 +147,7 @@
       label="Book Video"
       name="bookVideo"
     >
-      <div
-        v-if="initialVideoUrl"
-        class="mb-2 flex justify-center"
-      >
+      <div class="mb-2 flex justify-center">
         <UButton
           size="xs"
           color="neutral"
@@ -217,8 +211,8 @@ const props = defineProps<{
     totalBooks: number
     coverColor: string
     summary: string
-    imageUrl?: string
-    videoUrl?: string
+    imageUrl: string
+    videoUrl: string
   }
   onUpdate: (payload: UpdateBookSchema) => Promise<void>
 }>()

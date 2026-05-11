@@ -30,6 +30,7 @@
     "postgres": "^3.4.9",
     "tailwindcss": "^4.2.2",
     "uploadthing": "^7.7.4",
+    "vidstack": "^1.12.13",
     "vue": "^3.5.31",
     "vue-router": "^5.0.4",
     "zod": "^4.3.6"

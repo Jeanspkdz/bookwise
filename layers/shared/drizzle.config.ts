@@ -1,5 +1,4 @@
-import { dirname, join, posix } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { posix } from 'node:path'
 
 import { defineConfig } from 'drizzle-kit'
 
@@ -8,11 +7,8 @@ if (!NUXT_DATABASE_URL) {
   throw Error('DatabaseUrl not found')
 }
 
-const currentDir = dirname(fileURLToPath(import.meta.url))
-
 export default defineConfig({
-  // out: join(currentDir, 'server', 'db', 'migrations'),
-  out: './layers/shared/server/db/migrations',
+  out: posix.join('layers', 'shared', 'server', 'db', 'migrations'),
   schema: posix.join('layers', 'shared', 'server', 'db', 'schema', '*.ts'), //glob pattern
   dialect: 'postgresql',
   dbCredentials: {

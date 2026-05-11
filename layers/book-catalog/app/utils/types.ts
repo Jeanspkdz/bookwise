@@ -10,13 +10,7 @@ export type CreateBookResponse = {
   createdBook: Book
 }
 
-export interface UpdateBookPayload extends Omit<
-  Book,
-  'id' | 'createdAt' | 'updatedAt' | 'imageUrl' | 'videoUrl' | 'availableBooks'
-> {
-  bookImage?: File | undefined
-  bookVideo?: File | undefined
-}
+export type UpdateBookPayload = PartialBy<CreateBookPayload, 'bookImage' | 'bookVideo'>
 export type UpdateBookEventHandler = (payload: UpdateBookPayload) => Promise<void>
 export type UpdateBookResponse = {
   updatedBook: Book
@@ -27,3 +21,6 @@ export type DeleteBookEventHandler = (bookId: DeleteBookPayload) => Promise<void
 export type DeleteBookResponse = {
   deletedBook: Book
 }
+
+export type SelectBookPayload = Book['id']
+export type SelectBookEventHandler = (bookId: SelectBookPayload) => Promise<void>

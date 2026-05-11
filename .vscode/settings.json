@@ -5,6 +5,7 @@
   "editor.quickSuggestions": {
     "strings": "on"
   },
-  "tailwindCSS.classAttributes": ["class", "ui"]
+  "tailwindCSS.classAttributes": ["class", "ui"],
   // "tailwindCSS.experimental.classRegex": [["['\"`]([^'\"`]*)['\"`]"]]
+   "html.customData": ["./node_modules/vidstack/vscode.html-data.json"]
 }

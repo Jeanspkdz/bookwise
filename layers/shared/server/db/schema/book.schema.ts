@@ -18,7 +18,9 @@ export const bookSchema = pgTable('book', {
   totalBooks: t.integer().notNull().default(0),
   availableBooks: t.integer().notNull().default(0),
   imageUrl: t.text().notNull(),
+  imageKey: t.text(),
   videoUrl: t.text().notNull(),
+  videoKey: t.text(),
   coverColor: t.varchar({ length: 7 }).notNull().default('#FFFFFF'),
   ...timestamps,
 })

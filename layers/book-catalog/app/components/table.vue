@@ -17,6 +17,7 @@
       :ui="{
         base: 'min-w-[860px] w-full overflow-x-auto rounded-xl border border-default',
         thead: 'bg-primary-50 border-0',
+        tr: 'cursor-pointer hover:bg-primary-50/70 transition-colors',
         th: 'sticky top-0 z-10 border-b border-default bg-primary-50 px-4 py-3 text-sm font-medium text-default',
         td: 'border-b border-default px-4 py-4 text-sm align-middle last:border-b-0',
       }"
@@ -115,6 +116,7 @@
             size="md"
             aria-label="Edit book"
             :to="`/dashboard/book/${row.original.id}/update`"
+            @click.stop
           />
           <UModal title="Delete book">
             <UButton
@@ -123,6 +125,7 @@
               variant="ghost"
               size="md"
               aria-label="Delete book"
+              @click.stop
             />
 
             <template #description>
@@ -189,6 +192,7 @@ const { books } = defineProps<{
 
 const emit = defineEmits<{
   deleteBook: Parameters<DeleteBookEventHandler>
+  selectBook: Parameters<SelectBookEventHandler>
 }>()
 
 const tableRef = useTemplateRef('booksTable')
