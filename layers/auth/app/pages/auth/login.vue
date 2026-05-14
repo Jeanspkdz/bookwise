@@ -1,10 +1,13 @@
 <template>
   <div>
     <AuthLoginForm @submit="handleLoginSubmit" />
+    <BooKCover/>
   </div>
 </template>
 
 <script setup lang="ts">
+import BooKCover from '#layers/book-catalog/app/components/book-cover.vue'
+
 definePageMeta({
   layout: {
     name: 'auth-layout',
