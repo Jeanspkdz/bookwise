@@ -1,13 +1,10 @@
 <template>
   <div>
     <AuthLoginForm @submit="handleLoginSubmit" />
-    <BooKCover/>
   </div>
 </template>
 
 <script setup lang="ts">
-import BooKCover from '#layers/book-catalog/app/components/book-cover.vue'
-
 definePageMeta({
   layout: {
     name: 'auth-layout',
@@ -22,20 +19,26 @@ definePageMeta({
   },
 })
 
-type LoginFormPayload = {
-  email: string
-  password: string
-}
-
 const toast = useToast()
+const { login } = useAuth()
 
-const handleLoginSubmit = async (payload: LoginFormPayload) => {
-  await Promise.resolve(payload)
+const handleLoginSubmit: LoginEventHandler = async (payload) => {
+  const result = await login(payload)
 
+  if (result.type === 'success') {
+    toast.add({
+      title: 'Login successful',
+      description: `Welcome back ${result.data.name}`,
+      color: 'success',
+    })
+
+    await navigateTo('/')
+    return
+  }
   toast.add({
-    title: 'Login event ready',
-    description: `Captured submit for ${payload.email}`,
-    color: 'success',
+    title: 'Login failed',
+    description: result.error,
+    color: 'error',
   })
 }
 </script>

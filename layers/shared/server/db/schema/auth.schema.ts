@@ -1,11 +1,19 @@
+import { createId } from '@paralleldrive/cuid2'
 import { pgTable, text, timestamp, boolean, index } from 'drizzle-orm/pg-core'
 
 export const user = pgTable('user', {
-  id: text('id').primaryKey(),
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => createId()),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   emailVerified: boolean('email_verified').default(false).notNull(),
   image: text('image'),
+  studentCode: text('student_code').notNull(),
+  phoneNumber: text('phone_number').notNull(),
+  address: text('address').notNull(),
+  isApproved: boolean('is_approved').default(false).notNull(),
+  role: text('role').default('user').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
@@ -16,7 +24,9 @@ export const user = pgTable('user', {
 export const session = pgTable(
   'session',
   {
-    id: text('id').primaryKey(),
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
     expiresAt: timestamp('expires_at').notNull(),
     token: text('token').notNull().unique(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -35,7 +45,9 @@ export const session = pgTable(
 export const account = pgTable(
   'account',
   {
-    id: text('id').primaryKey(),
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
     accountId: text('account_id').notNull(),
     providerId: text('provider_id').notNull(),
     userId: text('user_id')
@@ -59,7 +71,9 @@ export const account = pgTable(
 export const verification = pgTable(
   'verification',
   {
-    id: text('id').primaryKey(),
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
     identifier: text('identifier').notNull(),
     value: text('value').notNull(),
     expiresAt: timestamp('expires_at').notNull(),

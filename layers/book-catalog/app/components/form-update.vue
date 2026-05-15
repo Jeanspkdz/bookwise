@@ -191,6 +191,7 @@
       label="Update Book"
       type="submit"
       class="w-full justify-center"
+      :loading="loading"
       :disabled="!formRef?.dirty"
     />
   </UForm>

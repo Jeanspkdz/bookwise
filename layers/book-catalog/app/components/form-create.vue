@@ -167,6 +167,7 @@
     <UButton
       label="Create Book"
       type="submit"
+      :loading="loading"
       class="w-full justify-center"
     />
   </UForm>

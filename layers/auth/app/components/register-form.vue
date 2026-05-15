@@ -1,9 +1,10 @@
 <template>
   <UForm
+    v-slot="{ loading }"
     :schema="schema"
     :state="state"
     class="space-y-5"
-    @submit="onSubmit"
+    @submit="handleSubmit"
   >
     <UFormField
       label="Full name"
@@ -16,6 +17,53 @@
         class="w-full"
         :ui="{
           base: 'text-white ring-accented/20 ',
+        }"
+      />
+    </UFormField>
+
+    <UFormField
+      label="Student code"
+      name="studentCode"
+    >
+      <UInput
+        v-model="state.studentCode"
+        type="text"
+        placeholder="eg: 12345678"
+        size="lg"
+        class="w-full"
+        :ui="{
+          base: 'text-white placeholder-gray-500 ring-accented/20',
+        }"
+      />
+    </UFormField>
+
+    <UFormField
+      label="Phone number"
+      name="phoneNumber"
+    >
+      <UInput
+        v-model="state.phoneNumber"
+        type="tel"
+        placeholder="eg: +1 555-123-4567"
+        size="lg"
+        class="w-full"
+        :ui="{
+          base: 'text-white placeholder-gray-500 ring-accented/20',
+        }"
+      />
+    </UFormField>
+
+    <UFormField
+      label="Address"
+      name="address"
+    >
+      <UInput
+        v-model="state.address"
+        placeholder="eg: 123 Main St, City"
+        size="lg"
+        class="w-full"
+        :ui="{
+          base: 'text-white placeholder-gray-500 ring-accented/20',
         }"
       />
     </UFormField>
@@ -69,6 +117,7 @@
     <UButton
       type="submit"
       block
+      :loading="loading"
       class="rounded-sm"
       size="xl"
       label="Sign Up"
@@ -89,7 +138,20 @@ const schema = z
       .string()
       .min(1, 'Full name is required')
       .min(2, 'Full name must be at least 2 characters'),
-    email: z.string().min(1, 'Email is required').email('Invalid email address'),
+    studentCode: z
+      .string()
+      .min(1, 'Student code is required')
+      .regex(/^\d{8}$/, 'Student code must be exactly 8 digits'),
+    phoneNumber: z
+      .stringFormat('phone-number', /^\+?[0-9][0-9()\s-]{6,19}$/, {
+        error: 'Invalid phone number format',
+      })
+      .min(1, 'Phone number is required'),
+    address: z
+      .string()
+      .min(1, 'Address is required')
+      .min(5, 'Address must be at least 5 characters'),
+    email: z.email('Invalid email address'),
     password: z
       .string()
       .min(1, 'Password is required')
@@ -112,19 +174,33 @@ const schema = z
 
 type RegisterSchema = z.output<typeof schema>
 
-const emit = defineEmits<{
-  submit: [payload: RegisterSchema]
+const props = defineProps<{
+  onSubmit: (payload: RegisterSchema) => Promise<void>
 }>()
 
 const state = reactive<Partial<RegisterSchema>>({
   fullName: '',
+  studentCode: '',
+  phoneNumber: '',
+  address: '',
   email: '',
   password: '',
   confirmPassword: '',
 })
 
-const onSubmit = (event: FormSubmitEvent<RegisterSchema>) => {
-  emit('submit', event.data)
+const resetForm = () => {
+  state.fullName = ''
+  state.studentCode = ''
+  state.phoneNumber = ''
+  state.address = ''
+  state.email = ''
+  state.password = ''
+  state.confirmPassword = ''
+}
+
+const handleSubmit = async (event: FormSubmitEvent<RegisterSchema>) => {
+  await props.onSubmit(event.data)
+  resetForm()
 }
 </script>
 

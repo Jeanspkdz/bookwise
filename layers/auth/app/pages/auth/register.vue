@@ -19,22 +19,26 @@ definePageMeta({
   },
 })
 
-type RegisterFormPayload = {
-  fullName: string
-  email: string
-  password: string
-  confirmPassword: string
-}
-
 const toast = useToast()
+const { register } = useAuth()
 
-const handleRegisterSubmit = async (payload: RegisterFormPayload) => {
-  await Promise.resolve(payload)
+const handleRegisterSubmit: RegisterEventHandler = async (payload) => {
+  const result = await register(payload)
+
+  if (result.type === 'success') {
+    toast.add({
+      title: 'Registration submitted',
+      description: 'Your account is pending admin approval. You can log in once approved.',
+      color: 'warning',
+    })
+
+    return
+  }
 
   toast.add({
-    title: 'Register event ready',
-    description: `Captured submit for ${payload.email}`,
-    color: 'success',
+    title: 'Registration failed',
+    description: result.error,
+    color: 'error',
   })
 }
 </script>

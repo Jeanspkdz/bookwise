@@ -1,9 +1,10 @@
 <template>
   <UForm
+    v-slot="{ loading }"
     :schema="schema"
     :state="state"
     class="space-y-5"
-    @submit="onSubmit"
+    @submit="handleSubmit"
   >
     <UFormField
       label="Email"
@@ -39,6 +40,7 @@
     <UButton
       type="submit"
       block
+      :loading="loading"
       class="rounded-sm"
       size="xl"
       label="Login"
@@ -53,8 +55,8 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { z } from 'zod'
 
-const emit = defineEmits<{
-  submit: [payload: LoginSchema]
+const props = defineProps<{
+  onSubmit: (payload: LoginSchema) => Promise<void>
 }>()
 
 const schema = z.object({
@@ -72,8 +74,14 @@ const state = reactive<Partial<LoginSchema>>({
   password: '',
 })
 
-const onSubmit = (event: FormSubmitEvent<LoginSchema>) => {
-  emit('submit', event.data)
+const resetForm = () => {
+  state.email = ''
+  state.password = ''
+}
+
+const handleSubmit = async (event: FormSubmitEvent<LoginSchema>) => {
+  await props.onSubmit(event.data)
+  resetForm()
 }
 </script>
 
