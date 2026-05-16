@@ -1,6 +1,6 @@
 <template>
   <div class="h-[385px] w-[277px]">
-    <SharedBookCover
+    <BookCatalogBookCover
       color="#1d2a4a"
       class="h-full w-full"
     />

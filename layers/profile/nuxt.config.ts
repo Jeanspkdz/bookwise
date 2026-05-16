@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   components: [
     {
       path: join(import.meta.dirname, 'app', 'components'),
-      prefix: 'Auth',
+      prefix: 'Profile',
     },
   ],
 })

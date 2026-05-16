@@ -2,17 +2,6 @@ import { authClient } from '~~/layers/auth/app/utils/auth'
 import type { Result } from '~~/layers/shared/shared/types/result'
 
 export function useAuth() {
-  const getAuth = async () => {
-    const { data, isPending, error } = await authClient.useSession(useFetch)
-
-    return {
-      isPending,
-      error,
-      session: data.value?.session,
-      user: data.value?.user,
-    }
-  }
-
   const register = async (
     payload: RegisterFormPayload,
   ): Promise<Result<RegisterResponse, string>> => {
@@ -88,7 +77,6 @@ export function useAuth() {
   }
 
   return {
-    getAuth,
     register,
     login,
   }

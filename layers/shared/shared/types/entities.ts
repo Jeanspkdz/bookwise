@@ -6,12 +6,13 @@ export type UserRole = 'admin' | 'user'
 
 export interface User {
   id: EntityId
-  fullName: string
+  name: string
   email: string
-  universityId: string
-  password: string
-  universityIdImage: string
-  isVerified: boolean
+  image?: string | null | undefined
+  studentCode: string
+  phoneNumber: string
+  address: string
+  isApproved: boolean
   role: UserRole
   createdAt: TimestampValue
   updatedAt: TimestampValue

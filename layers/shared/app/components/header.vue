@@ -19,7 +19,7 @@
         }"
         class="hidden md:block"
       >
-        <template #cta="{ item }">
+        <template #cta="{ item }: { item: NavigationMenuItem }">
           <UButton :label="item.label" />
         </template>
       </UNavigationMenu>
@@ -42,31 +42,58 @@
 
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
+import { useUserStore } from '~~/layers/shared/app/stores/userStore'
 
 const { currentPath } = defineProps<{
   currentPath: string
 }>()
 
-const navItems = computed(
-  () =>
-    [
-      {
-        label: 'Home',
-        to: '/',
-        active: currentPath.startsWith('/'),
+const { getUser, user } = useUserStore()
+
+await callOnce('user', async () => {
+  await getUser()
+})
+
+watchEffect(() => {
+  console.log('USER', user)
+})
+const navItems = computed(() => {
+  const items: NavigationMenuItem[] = [
+    {
+      label: 'Home',
+      to: '/',
+      active: currentPath === '/',
+    },
+    {
+      label: 'Search',
+      to: '/search',
+      active: currentPath.startsWith('/search'),
+    },
+  ]
+
+  if (user) {
+    items.push({
+      avatar: {
+        alt: user.name,
+        size: 'lg',
+        ui: {
+          root: 'border-primary-500/20 border-1',
+        },
       },
-      {
-        label: 'Search',
-        to: '#',
-        active: currentPath.startsWith('/search'),
-      },
-      {
-        label: 'Log In',
-        to: '/auth/login',
-        slot: 'cta' as const,
-      },
-    ] satisfies NavigationMenuItem[],
-)
+      to: '/profile',
+    })
+
+    return items
+  }
+
+  items.push({
+    label: 'Log In',
+    to: '/auth/login',
+    slot: 'cta' as const,
+  })
+
+  return items
+})
 </script>
 
 <style scoped></style>

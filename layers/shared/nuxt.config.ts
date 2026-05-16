@@ -3,7 +3,7 @@ import { join, resolve } from 'node:path'
 import { vite as vidstack } from 'vidstack/plugins'
 export default defineNuxtConfig({
   css: [join(import.meta.dirname, 'app', 'assets', 'css', 'main.css')],
-  modules: ['@nuxt/ui'],
+  modules: ['@nuxt/ui', '@pinia/nuxt'],
   components: [
     {
       path: join(import.meta.dirname, 'app', 'components'),

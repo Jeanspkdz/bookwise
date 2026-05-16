@@ -17,17 +17,17 @@
   --ui-color-primary-950: #2b1805;
 
   /* Secondary — Navy Slate */
-  --ui-color-secondary-50: #eaebed;
-  --ui-color-secondary-100: #c5c7ce;
-  --ui-color-secondary-200: #9da0ae;
-  --ui-color-secondary-300: #74788e;
-  --ui-color-secondary-400: #4d526e;
-  --ui-color-secondary-500: #111624;
-  --ui-color-secondary-600: #0e1220;
-  --ui-color-secondary-700: #0b0e19;
-  --ui-color-secondary-800: #080b13;
-  --ui-color-secondary-900: #05070d;
-  --ui-color-secondary-950: #020308;
+  --ui-color-secondary-50: #f5f7ff;
+  --ui-color-secondary-100: #e3e9ff;
+  --ui-color-secondary-200: #D6E0FF; /* text */
+  --ui-color-secondary-300: #b3c4ff;
+  --ui-color-secondary-400: #7f9bff;
+  --ui-color-secondary-500: #4d6fff;
+  --ui-color-secondary-600: #3a54cc;
+  --ui-color-secondary-700: #2e4199;
+  --ui-color-secondary-800: #232839; /* bg */
+  --ui-color-secondary-900: #161b2e;
+  --ui-color-secondary-950: #0d1020;
 
   /* ui aliases */
   --ui-primary: var(--ui-color-primary-500);
