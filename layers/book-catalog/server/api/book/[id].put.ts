@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
+import { getServerSession } from '~~/layers/auth/server/utils/session'
 import { bookSchema } from '~~/layers/shared/server/db/schema/book.schema'
 import { bookUpdateSchema } from '~~/layers/shared/server/utils/validator'
 
@@ -9,6 +10,15 @@ const routeParamValidator = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  const session = await getServerSession(event)
+
+  if (session.user.role !== 'admin') {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Forbidden',
+    })
+  }
+
   const routeParamValidationResult = await getValidatedRouterParams(
     event,
     routeParamValidator.safeParse,

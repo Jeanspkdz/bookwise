@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
+import { getServerSession } from '~~/layers/auth/server/utils/session'
 import { bookSchema } from '~~/layers/shared/server/db/schema/book.schema'
 
 const routeParamValidator = z.object({
@@ -7,6 +8,8 @@ const routeParamValidator = z.object({
 })
 
 export default defineEventHandler(async (event) => {
+  await getServerSession(event)
+
   const routeParamValidationResult = await getValidatedRouterParams(
     event,
     routeParamValidator.safeParse,
