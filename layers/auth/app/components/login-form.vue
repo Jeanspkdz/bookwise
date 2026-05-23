@@ -17,7 +17,7 @@
         size="lg"
         class="w-full rounded-sm"
         :ui="{
-          base: 'text-white placeholder-gray-500  ring-accented/20',
+          base: 'text-white placeholder-gray-500  ring-accented/20 rounded-sm bg-[#1c1f2e] py-4 px-5',
         }"
       />
     </UFormField>
@@ -32,7 +32,7 @@
         size="lg"
         class="w-full"
         :ui="{
-          base: 'text-white placeholder-gray-500  ring-accented/20',
+          base: 'text-white placeholder-gray-500  ring-accented/20 rounded-sm bg-[#1c1f2e] py-4 px-5',
         }"
       />
     </UFormField>

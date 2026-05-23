@@ -1,14 +1,20 @@
 <template>
   <div
-    class="from-secondary-800 to-secondary-950 flex max-w-[520px] flex-col gap-y-8 rounded-[20px] bg-linear-to-b px-10 pt-15 pb-10"
+    class="from-secondary-800 to-secondary-950 relative flex max-w-[520px] flex-col gap-y-8 rounded-[20px] bg-linear-to-b px-10 pt-15 pb-10"
   >
+    <NuxtImg
+      src="/hanging-tab.svg"
+      class="absolute -top-3 right-0 left-0 mx-auto size-20"
+    />
+
     <UUser
+      class="mt-6"
       :name="username"
       size="3xl"
       :description="email"
       :avatar="{
         alt: username,
-        ui: { root: 'size-25' },
+        ui: { root: 'size-25 ring-2 ring-primary mr-4' },
       }"
     >
       <template #name>
@@ -56,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   username: string
   email: string
   studentCode: string
@@ -64,10 +70,6 @@ const props = defineProps<{
   address: string
   isAccountApproved: boolean
 }>()
-
-watchEffect(() => {
-  console.log('CARD', props.username)
-})
 </script>
 
 <style scoped></style>

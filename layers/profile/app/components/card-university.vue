@@ -44,11 +44,11 @@
           <span class="text-[#8aaabb]">:</span>
           <span class="font-bold text-white">{{ department }}</span>
         </div>
-        <div class="flex items-baseline gap-2 text-sm">
+        <!-- <div class="flex items-baseline gap-2 text-sm">
           <span class="w-28 shrink-0 text-[#8aaabb]">Date of Birth</span>
           <span class="text-[#8aaabb]">:</span>
           <span class="font-bold text-white">{{ dateOfBirth }}</span>
-        </div>
+        </div> -->
         <div class="flex items-baseline gap-2 text-sm">
           <span class="w-28 shrink-0 text-[#8aaabb]">Contact no</span>
           <span class="text-[#8aaabb]">:</span>
@@ -78,7 +78,7 @@ const {
   dateOfBirth = '--/--/----',
   contactNumber = 'Not provided',
   universityName = 'Dev University',
-  universityTagline = 'If you can imaginiog ti you can build it',
+  universityTagline = 'If you can imagine it, you can build it',
   universityPhone = '+1 (800) 456-7890',
   universityWebsite = 'www.bookwise.com',
 } = defineProps<{

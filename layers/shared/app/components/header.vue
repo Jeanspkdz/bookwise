@@ -42,21 +42,12 @@
 
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
-import { useUserStore } from '~~/layers/shared/app/stores/userStore'
 
-const { currentPath } = defineProps<{
+const { currentPath, username } = defineProps<{
   currentPath: string
+  username: string | undefined
 }>()
 
-const { getUser, user } = useUserStore()
-
-await callOnce('user', async () => {
-  await getUser()
-})
-
-watchEffect(() => {
-  console.log('USER', user)
-})
 const navItems = computed(() => {
   const items: NavigationMenuItem[] = [
     {
@@ -66,15 +57,15 @@ const navItems = computed(() => {
     },
     {
       label: 'Search',
-      to: '/search',
+      to: '#',
       active: currentPath.startsWith('/search'),
     },
   ]
 
-  if (user) {
+  if (username) {
     items.push({
       avatar: {
-        alt: user.name,
+        alt: username,
         size: 'lg',
         ui: {
           root: 'border-primary-500/20 border-1',

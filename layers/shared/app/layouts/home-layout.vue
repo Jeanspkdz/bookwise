@@ -1,6 +1,9 @@
 <template>
-  <div class="font-plex">
-    <SharedHeader :current-path="currentPath" />
+  <div class="font-plex tracking-wider">
+    <SharedHeader
+      :current-path="currentPath"
+      :username="user?.name"
+    />
 
     <UMain>
       <slot />
@@ -11,8 +14,16 @@
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from '~~/layers/shared/app/stores/useUserStore'
+
 const route = useRoute()
 const currentPath = computed(() => route.path)
+
+const userStore = useUserStore()
+const { user } = storeToRefs(userStore)
+await callOnce('auth', async () => {
+  await userStore.getUser()
+})
 </script>
 
 <style scoped>

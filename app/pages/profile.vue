@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { useUserStore } from '~~/layers/shared/app/stores/userStore'
+import { useUserStore } from '~~/layers/shared/app/stores/useUserStore'
 
 definePageMeta({
   layout: {

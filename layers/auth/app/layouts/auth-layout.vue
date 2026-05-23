@@ -13,7 +13,9 @@
             name="jpkdz-logo"
             class="size-8"
           />
-          <h1 class="block">BookWise</h1>
+          <h1>
+            <NuxtLink to="/"> BookWise </NuxtLink>
+          </h1>
         </div>
 
         <div class="mb-9">
