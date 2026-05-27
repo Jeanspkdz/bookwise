@@ -5,9 +5,7 @@
       :username="user?.name"
     />
 
-    <UMain>
-      <slot />
-    </UMain>
+    <slot />
 
     <SharedFooter />
   </div>

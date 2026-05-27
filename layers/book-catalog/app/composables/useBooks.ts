@@ -7,8 +7,81 @@ export function useBooks() {
     lazy: true,
     default: () => [],
   })
+
   const { startUpload: startImageUpload } = useUploadThing('bookImage')
   const { startUpload: startVideoUpload } = useUploadThing('bookVideo')
+
+  const getBooks = async (): Promise<Result<Book[], string>> => {
+    try {
+      const response = await $fetch<Book[]>('/api/book', {
+        method: 'GET',
+      })
+
+      return {
+        type: 'success',
+        data: response,
+      }
+    } catch {
+      return {
+        type: 'failure',
+        error: 'Something went wrong. Failed to get books',
+      }
+    }
+  }
+
+  const getBookById = async (id: Book['id']): Promise<Result<Book, string>> => {
+    try {
+      const response = await $fetch<Book>(`/api/book/${id}`, {
+        method: 'GET',
+      })
+
+      return {
+        type: 'success',
+        data: response,
+      }
+    } catch {
+      return {
+        type: 'failure',
+        error: 'Something went wrong. Failed to get book',
+      }
+    }
+  }
+
+  const getFeaturedBook = async (): Promise<Result<GetFeaturedBookResponse, string>> => {
+    try {
+      const response = await $fetch<GetFeaturedBookResponse>('/api/book?featured=true', {
+        method: 'GET',
+      })
+
+      return {
+        type: 'success',
+        data: response,
+      }
+    } catch {
+      return {
+        type: 'failure',
+        error: 'Something went wrong. Failed to get featured book',
+      }
+    }
+  }
+
+  const getPopularBooks = async (): Promise<Result<GetPopularBooksResponse, string>> => {
+    try {
+      const response = await $fetch<GetPopularBooksResponse>('/api/book?sort=popular', {
+        method: 'GET',
+      })
+
+      return {
+        type: 'success',
+        data: response,
+      }
+    } catch {
+      return {
+        type: 'failure',
+        error: 'Something went wrong. Failed to get popular books',
+      }
+    }
+  }
 
   const createBook = async (
     payload: CreateBookPayload,
@@ -75,6 +148,10 @@ export function useBooks() {
     books: computed(() => data.value ?? []),
     pending,
     error,
+    getBooks,
+    getBookById,
+    getFeaturedBook,
+    getPopularBooks,
     createBook,
     deleteBook,
   }

@@ -24,3 +24,11 @@ export type DeleteBookResponse = {
 
 export type SelectBookPayload = Book['id']
 export type SelectBookEventHandler = (bookId: SelectBookPayload) => Promise<void>
+
+export type GetFeaturedBookResponse = {
+  featuredBook: Book
+}
+
+export type GetPopularBooksResponse = {
+  popularBooks: Book[]
+}
