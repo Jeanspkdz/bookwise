@@ -2,29 +2,30 @@
   <UMain>
     <HeroSection
       :featured-book="featuredBook"
-      :pending="pending"
+      :pending="featuredPending"
+      :error="featuredError"
+      @refresh="refreshFeaturedBook"
     />
     <PopularBooksSection
       :books="popularBooks"
-      :pending="pending"
+      :pending="popularPending"
+      :error="popularError"
+      @refresh="refreshPopularBooks"
     />
   </UMain>
 </template>
 
 <script setup lang="ts">
-const { featuredBook, popularBooks, pending, error } = useHomeData()
-
-watch(
-  error,
-  (value) => {
-    if (!value) {
-      return
-    }
-
-    console.error('Failed to load home data', value)
-  },
-  { immediate: true },
-)
+const {
+  featuredBook,
+  featuredError,
+  featuredPending,
+  refreshFeaturedBook,
+  popularBooks,
+  popularError,
+  popularPending,
+  refreshPopularBooks,
+} = useHomeData()
 
 definePageMeta({
   layout: 'home-layout',

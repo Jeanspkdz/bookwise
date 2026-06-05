@@ -1,26 +1,59 @@
 export function useHomeData() {
   const { getFeaturedBook, getPopularBooks } = useBooks()
 
-  const asyncData = useAsyncData('home-data', async () => {
-    const [featuredResult, popularResult] = await Promise.all([
-      getFeaturedBook(),
-      getPopularBooks(),
-    ])
+  const {
+    data: featuredData,
+    pending: featuredPending,
+    refresh: refreshFeaturedBook,
+  } = useAsyncData('home-featured-book', async () => {
+    const result = await getFeaturedBook()
 
-    const featuredBook = featuredResult.type === 'success' ? featuredResult.data.featuredBook : null
-    const popularBooks = popularResult.type === 'success' ? popularResult.data.popularBooks : []
+    if (result.type === 'failure') {
+      return {
+        featuredBook: null,
+        featuredError: result.error,
+      }
+    }
 
     return {
-      featuredBook,
-      popularBooks,
+      featuredBook: result.data.featuredBook,
+      featuredError: null,
     }
   })
 
+  const {
+    data: popularData,
+    pending: popularPending,
+    refresh: refreshPopularBooks,
+  } = useAsyncData('home-popular-books', async () => {
+    const result = await getPopularBooks()
+
+    if (result.type === 'failure') {
+      return {
+        popularBooks: [],
+        popularError: result.error,
+      }
+    }
+
+    return {
+      popularBooks: result.data.popularBooks,
+      popularError: null,
+    }
+  })
+
+  const refreshHomeData = () => Promise.all([refreshFeaturedBook(), refreshPopularBooks()])
+
   return {
-    featuredBook: computed(() => asyncData.data.value?.featuredBook ?? null),
-    popularBooks: computed(() => asyncData.data.value?.popularBooks ?? []),
-    pending: asyncData.pending,
-    error: asyncData.error,
-    refresh: asyncData.refresh,
+    featuredBook: computed(() => featuredData.value?.featuredBook ?? null),
+    featuredError: computed(() => featuredData.value?.featuredError ?? null),
+    featuredPending,
+    refreshFeaturedBook,
+
+    popularBooks: computed(() => popularData.value?.popularBooks ?? []),
+    popularError: computed(() => popularData.value?.popularError ?? null),
+    popularPending,
+    refreshPopularBooks,
+
+    refreshHomeData,
   }
 }
