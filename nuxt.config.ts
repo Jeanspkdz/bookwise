@@ -7,6 +7,12 @@ export default defineNuxtConfig({
     domains: ['jvxbumdjlq.ufs.sh'],
   },
   routeRules: {
-    '/dashboard/**': { appLayout: 'dashboard-layout' },
+    '/dashboard/**': {
+      appLayout: 'dashboard-layout',
+      cache: {
+        maxAge: 60,
+        staleMaxAge: 60 * 2,
+      },
+    },
   },
 })
