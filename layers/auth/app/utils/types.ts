@@ -26,3 +26,9 @@ export type LoginResponse = {
   email: string
   name: string
 }
+
+export type LogoutEventHandler = () => Promise<void>
+
+export type LogoutResponse = {
+  success: boolean
+}

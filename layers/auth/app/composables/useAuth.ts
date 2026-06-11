@@ -76,8 +76,34 @@ export function useAuth() {
     }
   }
 
+  const logout = async (): Promise<Result<LogoutResponse, string>> => {
+    try {
+      const { error } = await authClient.signOut()
+
+      if (error) {
+        return {
+          type: 'failure',
+          error: error.message || 'Something went wrong. Failed to logout',
+        }
+      }
+
+      return {
+        type: 'success',
+        data: {
+          success: true,
+        },
+      }
+    } catch {
+      return {
+        type: 'failure',
+        error: 'Something went wrong. Failed to logout',
+      }
+    }
+  }
+
   return {
     register,
     login,
+    logout,
   }
 }

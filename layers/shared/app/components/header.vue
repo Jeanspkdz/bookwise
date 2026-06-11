@@ -11,24 +11,55 @@
     </template>
 
     <template #right>
-      <UNavigationMenu
-        variant="link"
-        :items="navItems"
-        :ui="{
-          link: 'hover:text-primary',
-        }"
-        class="hidden md:block"
-      >
-        <template #cta="{ item }: { item: NavigationMenuItem }">
-          <UButton :label="item.label" />
-        </template>
-      </UNavigationMenu>
+      <div class="hidden items-center gap-3 md:flex">
+        <UNavigationMenu
+          variant="link"
+          :items="desktopNavItems"
+          :ui="{
+            link: 'hover:text-primary',
+          }"
+        >
+          <template #cta="{ item }: { item: NavigationMenuItem }">
+            <UButton :label="item.label" />
+          </template>
+        </UNavigationMenu>
+
+        <UDropdownMenu
+          v-if="username"
+          :items="avatarMenuItems"
+          :content="{
+            align: 'end',
+            side: 'bottom',
+            sideOffset: 12,
+          }"
+          :ui="{
+            content: 'min-w-40',
+          }"
+        >
+          <UButton
+            variant="ghost"
+            color="neutral"
+            class="rounded-full p-0 hover:bg-transparent"
+            :ui="{
+              base: 'rounded-full',
+            }"
+          >
+            <UAvatar
+              :alt="username"
+              size="lg"
+              :ui="{
+                root: 'border-primary-500/20 border',
+              }"
+            />
+          </UButton>
+        </UDropdownMenu>
+      </div>
     </template>
 
     <template #body>
       <UNavigationMenu
         :highlight="true"
-        :items="navItems"
+        :items="mobileNavItems"
         orientation="vertical"
         class="-mx-2.5"
         :ui="{
@@ -42,13 +73,18 @@
 
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
+import type { LogoutEventHandler } from '~~/layers/auth/app/utils/types'
 
 const { currentPath, username } = defineProps<{
   currentPath: string
   username: string | undefined
 }>()
 
-const navItems = computed(() => {
+const emit = defineEmits<{
+  logout: Parameters<LogoutEventHandler>
+}>()
+
+const desktopNavItems = computed(() => {
   const items: NavigationMenuItem[] = [
     {
       label: 'Home',
@@ -62,29 +98,59 @@ const navItems = computed(() => {
     },
   ]
 
-  if (username) {
+  if (!username) {
     items.push({
-      avatar: {
-        alt: username,
-        size: 'lg',
-        ui: {
-          root: 'border-primary-500/20 border-1',
-        },
-      },
-      to: '/profile',
+      label: 'Log In',
+      to: '/auth/login',
+      slot: 'cta' as const,
     })
-
-    return items
   }
-
-  items.push({
-    label: 'Log In',
-    to: '/auth/login',
-    slot: 'cta' as const,
-  })
 
   return items
 })
+
+const avatarMenuItems = computed(() => [[
+  {
+    label: 'Profile',
+    icon: 'i-lucide-user',
+    to: '/profile',
+  },
+  {
+    label: 'Logout',
+    icon: 'i-lucide-log-out',
+    onSelect: (event: Event) => {
+      handleLogoutSelect(event)
+    },
+  },
+]])
+
+const mobileNavItems = computed(() => {
+  const items = [...desktopNavItems.value]
+
+  if (username) {
+    items.push(
+      {
+        label: 'Profile',
+        to: '/profile',
+        icon: 'i-lucide-user',
+      },
+      {
+        label: 'Logout',
+        icon: 'i-lucide-log-out',
+        onSelect: (event: Event) => {
+          handleLogoutSelect(event)
+        },
+      },
+    )
+  }
+
+  return items
+})
+
+const handleLogoutSelect = (event: Event) => {
+  event.preventDefault()
+  emit('logout')
+}
 </script>
 
 <style scoped></style>
