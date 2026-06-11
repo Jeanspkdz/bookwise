@@ -5,6 +5,8 @@
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from '~~/layers/shared/app/stores/useUserStore'
+
 definePageMeta({
   layout: {
     name: 'auth-layout',
@@ -21,11 +23,14 @@ definePageMeta({
 
 const toast = useToast()
 const { login } = useAuth()
+const userStore = useUserStore()
 
 const handleLoginSubmit: LoginEventHandler = async (payload) => {
   const result = await login(payload)
 
   if (result.type === 'success') {
+    await userStore.getUser()
+
     toast.add({
       title: 'Login successful',
       description: `Welcome back ${result.data.name}`,
