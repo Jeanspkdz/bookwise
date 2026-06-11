@@ -24,6 +24,7 @@
         <NuxtImg
           src="/university-profile-photo.png"
           alt="Student photo"
+          format="avif,webp"
           class="h-full w-full object-cover"
         />
       </div>

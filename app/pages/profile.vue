@@ -1,7 +1,7 @@
 <template>
   <UContainer class="flex items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
     <div class="flex-1/2">
-      <div v-if="!user">Oops, soemtign wenh twrong</div>
+      <div v-if="!user">Oops, something went wrong</div>
       <div v-else>
         <ProfileCard
           :username="user.name"
