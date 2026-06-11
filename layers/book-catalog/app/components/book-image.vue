@@ -7,6 +7,8 @@
     <NuxtImg
       alt="Book cover image"
       sizes="200px md:240px lg:277px"
+      format="webp"
+      :preload="preload"
       :src="imageUrl"
       class="absolute top-0 right-0 h-[88%] w-[88%]"
     />
@@ -14,9 +16,14 @@
 </template>
 
 <script setup lang="ts">
-const { imageUrl = '/book-cover.webp', coverColor = '#1d2a4a' } = defineProps<{
+type ImagePreload = boolean | {
+  fetchPriority: 'high' | 'low' | 'auto'
+}
+
+const { imageUrl = '/book-cover.webp', coverColor = '#1d2a4a', preload = false } = defineProps<{
   imageUrl?: string
   coverColor?: string
+  preload?: ImagePreload
 }>()
 </script>
 

@@ -59,6 +59,7 @@
             class="relative z-10 h-[385px] w-[277px]"
             :image-url="featuredBook?.imageUrl"
             :cover-color="featuredBook?.coverColor"
+            :preload="{ fetchPriority: 'high' }"
           />
           <BookCatalogBookImage
             class="absolute! top-0 left-[35%] h-[385px] w-[277px] translate-y-9 rotate-10 blur"
