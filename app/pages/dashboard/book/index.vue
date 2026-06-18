@@ -69,7 +69,7 @@ definePageMeta({
 })
 
 const toast = useToast()
-const { books, pending, error, deleteBook } = useBooks()
+const { books, pending, error, deleteBook } = useBooks({ fetchBooks: true })
 
 const handleDeleteBook: DeleteBookEventHandler = async (bookId) => {
   const result = await deleteBook(bookId)

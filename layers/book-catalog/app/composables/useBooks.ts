@@ -1,12 +1,26 @@
 import type { Result } from '~~/layers/shared/shared/types/result'
 
-export function useBooks() {
+import { useRequestFetch } from '#app'
+
+type UseBooksOptions = {
+  fetchBooks?: boolean
+}
+
+export function useBooks(options: UseBooksOptions = {}) {
+  const { fetchBooks = false } = options
+
   const { data, pending, error } = useFetch<Book[]>('/api/book', {
     method: 'GET',
     key: 'admin-books',
     lazy: true,
+    immediate: fetchBooks,
     default: () => [],
+    headers: {
+      'bookwise-dashboard-request': 'true',
+    },
   })
+
+  const requestFetch = useRequestFetch()
 
   const { startUpload: startImageUpload } = useUploadThing('bookImage')
   const { startUpload: startVideoUpload } = useUploadThing('bookVideo')
@@ -49,8 +63,11 @@ export function useBooks() {
 
   const getFeaturedBook = async (): Promise<Result<GetFeaturedBookResponse, string>> => {
     try {
-      const response = await $fetch<GetFeaturedBookResponse>('/api/book?featured=true', {
+      const response = await requestFetch<GetFeaturedBookResponse>('/api/book', {
         method: 'GET',
+        query: {
+          featured: true,
+        },
       })
 
       return {
@@ -67,8 +84,11 @@ export function useBooks() {
 
   const getPopularBooks = async (): Promise<Result<GetPopularBooksResponse, string>> => {
     try {
-      const response = await $fetch<GetPopularBooksResponse>('/api/book?sort=popular', {
+      const response = await requestFetch<GetPopularBooksResponse>('/api/book', {
         method: 'GET',
+        query: {
+          sort: 'popular',
+        },
       })
 
       return {
