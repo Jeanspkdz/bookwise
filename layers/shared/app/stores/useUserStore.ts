@@ -27,7 +27,7 @@ export const useUserStore = defineStore('user-store', () => {
             ...currentUser,
             image: currentUser.image ?? null,
             isApproved: currentUser.isApproved ?? false,
-            role: currentUser.role ?? 'user',
+            role: currentUser.role ?? 'student',
           }
         : null
 

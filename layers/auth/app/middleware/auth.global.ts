@@ -9,12 +9,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const { getUser } = userStore
   const { user } = storeToRefs(userStore)
   await callOnce('auth', async () => {
-    await getUser()
     console.log('From middleware')
+    await getUser()
   })
 
   // if (!userStore.user || userStore.user.role === 'user') {
-  if (!user) {
+  if (!user.value) {
     return navigateTo('/')
   }
 })

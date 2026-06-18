@@ -1,5 +1,7 @@
 import { createId } from '@paralleldrive/cuid2'
-import { pgTable, text, timestamp, boolean, index } from 'drizzle-orm/pg-core'
+import { pgTable, text, timestamp, boolean, index, pgEnum } from 'drizzle-orm/pg-core'
+
+export const rolesEnum = pgEnum('user-roles', ['admin', 'student'])
 
 export const user = pgTable('user', {
   id: text('id')
@@ -13,7 +15,7 @@ export const user = pgTable('user', {
   phoneNumber: text('phone_number').notNull(),
   address: text('address').notNull(),
   isApproved: boolean('is_approved').default(false).notNull(),
-  role: text('role').default('user').notNull(),
+  role: rolesEnum('role').default('student').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()

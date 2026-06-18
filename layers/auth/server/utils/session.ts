@@ -7,12 +7,16 @@ export const getServerSession = async (event: H3Event) => {
     headers: event.headers,
   })
 
+  console.log('SESSIOn', session)
+
   if (!session?.user) {
     throw createError({
       statusCode: 401,
       statusMessage: 'Unauthorized',
     })
   }
+
+  event.context.userSession = session
 
   return session
 }

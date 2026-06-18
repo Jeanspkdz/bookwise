@@ -2,7 +2,7 @@ export type EntityId = string
 
 export type TimestampValue = Date | string
 
-export type UserRole = 'admin' | 'user'
+export type UserRole = 'admin' | 'student'
 
 export interface User {
   id: EntityId
