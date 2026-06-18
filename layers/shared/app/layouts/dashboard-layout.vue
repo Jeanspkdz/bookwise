@@ -34,9 +34,10 @@
         <UNavigationMenu
           :ui="{
             list: 'space-y-4',
-            link: `py-3 hover:bg-primary hover:text-white rounded-md`,
+            link: `py-3 hover:bg-primary hover:text-white rounded-md data-active:bg-primary data-active:text-white group`,
             linkLabel: `${collapsed ? 'hidden' : 'block'}`,
-            linkLeadingIcon: 'group-hover:brightness-0 group-hover:invert',
+            linkLeadingIcon:
+              'group-hover:brightness-0 group-hover:invert group-data-active:invert group-data-active:brightness-0',
           }"
           :collapsed="collapsed"
           :items="navItems"
@@ -81,22 +82,27 @@ const navItems: NavigationMenuItem[] = [
   {
     label: 'Home',
     icon: 'jpkdz-admin-home',
+    to: '/dashboard',
   },
   {
     label: 'All Users',
     icon: 'jpkdz-admin-users',
+    to: '/dashboard/home',
   },
   {
     label: 'All Books',
     icon: 'jpkdz-admin-book',
+    to: '/dashboard/book',
   },
   {
     label: 'Borrow Requests',
     icon: 'jpkdz-admin-bookmark',
+    to: '/dashboard/borrow-request',
   },
   {
     label: 'Account Requests',
     icon: 'jpkdz-admin-user',
+    to: '/dashboard/account-request',
   },
 ]
 </script>
