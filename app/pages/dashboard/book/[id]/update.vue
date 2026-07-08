@@ -37,9 +37,9 @@
 
       <div
         v-if="pending"
-        class="mx-auto mt-6 w-xl"
+        class="mt-6"
       >
-        <USkeleton class="h-10 w-full" />
+        <BookCatalogFormUpdateSkeleton />
       </div>
 
       <div

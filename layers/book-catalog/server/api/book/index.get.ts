@@ -11,6 +11,22 @@ const routeQueryValidator = z.object({
 export default defineCachedEventHandler(
   // export default defineEventHandler(
   async (event) => {
+    const generatedAt = new Date().toISOString()
+
+    console.log('----------------------------------------')
+    console.log('----------------------------------------')
+    console.log('----------------------------------------')
+    console.log('----------------------------------------')
+    console.log('[get-books] Handler executed')
+    console.log('[get-books] generatedAt:', generatedAt)
+    console.log('[get-books] url:', getRequestURL(event).toString())
+    console.log('[get-books] durmiendo 3 segundos...')
+
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+
+    console.log('[get-books] despertó, continuando...')
+    console.log('----------------------------------------')
+
     const routeQueryValidationResult = await getValidatedQuery(event, routeQueryValidator.safeParse)
 
     if (!routeQueryValidationResult.success) {
@@ -59,8 +75,8 @@ export default defineCachedEventHandler(
     return data
   },
   {
-    maxAge: 30,
-    swr: false,
+    maxAge: 10,
+    swr: true,
     staleMaxAge: 15,
     name: 'get-books',
     varies: ['cookie'],

@@ -14,6 +14,7 @@
       :sorting-options="sortingOptions"
       :pagination-options="paginationOptions"
       sticky
+      @select="selectBook"
       :ui="{
         base: 'min-w-[860px] w-full overflow-x-auto rounded-xl border border-default',
         thead: 'bg-primary-50 border-0',
@@ -180,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TableColumn } from '@nuxt/ui'
+import type { TableColumn, TableRow } from '@nuxt/ui'
 import type { PaginationState, SortingState } from '@tanstack/vue-table'
 import { getPaginationRowModel } from '@tanstack/vue-table'
 
@@ -238,6 +239,10 @@ const getSortIcon = (direction: false | 'asc' | 'desc') => {
 
 const confirmDeleteBook = (bookId: string) => {
   emit('deleteBook', bookId)
+}
+
+const selectBook = (_event: Event, row: TableRow<Book>) => {
+  emit('selectBook', row.original.id)
 }
 </script>
 

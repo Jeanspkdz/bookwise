@@ -72,7 +72,9 @@ definePageMeta({
 const route = useRoute()
 
 const bookId = computed(() => String(route.params.id ?? ''))
-const { book, pending, error } = useBook(bookId)
+const { book, pending, error, execute } = useBook(bookId)
+
+await execute()
 
 const summaryParagraphs = computed(() => {
   if (!book.value) {

@@ -56,6 +56,7 @@
             :pending="pending"
             :error="error"
             @delete-book="handleDeleteBook"
+            @select-book="handleSelectBook"
           />
         </div>
       </div>
@@ -70,6 +71,10 @@ definePageMeta({
 
 const toast = useToast()
 const { books, pending, error, deleteBook } = useBooks({ fetchBooks: true })
+
+const handleSelectBook: SelectBookEventHandler = async (bookId) => {
+  await navigateTo(`/dashboard/book/${bookId}`)
+}
 
 const handleDeleteBook: DeleteBookEventHandler = async (bookId) => {
   const result = await deleteBook(bookId)

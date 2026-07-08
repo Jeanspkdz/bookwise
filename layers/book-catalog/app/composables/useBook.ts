@@ -1,7 +1,13 @@
 import { toValue } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
 
-export function useBook(id: MaybeRefOrGetter<Book['id']>) {
+interface UseBookOptions {
+  lazy?: boolean
+}
+
+export function useBook(id: MaybeRefOrGetter<Book['id']>, options: UseBookOptions = {}) {
+  const { lazy = true } = options
+
   const bookId = computed(() => toValue(id))
   const { startUpload: startImageUpload } = useUploadThing('bookImage')
   const { startUpload: startVideoUpload } = useUploadThing('bookVideo')
@@ -11,10 +17,11 @@ export function useBook(id: MaybeRefOrGetter<Book['id']>) {
     pending,
     error,
     refresh,
+    execute,
   } = useFetch<Book | null>(() => `/api/book/${bookId.value}`, {
     method: 'GET',
     key: () => `admin-book-${bookId.value}`,
-    lazy: true,
+    lazy,
     default: () => null,
     watch: [bookId],
   })
@@ -37,7 +44,6 @@ export function useBook(id: MaybeRefOrGetter<Book['id']>) {
       if (payload.bookImage) {
         const imageUploadResult = await startImageUpload([payload.bookImage])
 
-        console.log('image upload', imageUploadResult?.[0])
         const uploadedImageUrl = imageUploadResult?.[0]?.ufsUrl
 
         if (!uploadedImageUrl) {
@@ -101,5 +107,6 @@ export function useBook(id: MaybeRefOrGetter<Book['id']>) {
     error,
     updateBook,
     refresh,
+    execute,
   }
 }
