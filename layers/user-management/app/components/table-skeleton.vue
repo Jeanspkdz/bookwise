@@ -1,0 +1,37 @@
+<template>
+  <div class="border-default w-full min-w-[760px] overflow-x-auto rounded-xl border">
+    <div
+      class="bg-primary-50 border-default grid grid-cols-[minmax(240px,2fr)_minmax(160px,1fr)_minmax(180px,1.2fr)_120px] border-b"
+    >
+      <div
+        v-for="header in tableHeaders"
+        :key="header"
+        class="text-default px-4 py-3 text-sm font-medium"
+      >
+        {{ header }}
+      </div>
+    </div>
+
+    <div
+      v-for="row in skeletonRows"
+      :key="row"
+      class="border-default grid grid-cols-[minmax(240px,2fr)_minmax(160px,1fr)_minmax(180px,1.2fr)_120px] items-center border-b px-4 py-4 last:border-b-0"
+    >
+      <div class="flex items-center gap-3">
+        <USkeleton class="h-10 w-10 rounded-full" />
+        <div class="space-y-2">
+          <USkeleton class="h-4 w-36" />
+          <USkeleton class="h-3 w-44" />
+        </div>
+      </div>
+      <USkeleton class="h-4 w-28" />
+      <USkeleton class="h-4 w-24" />
+      <USkeleton class="h-8 w-24 rounded-md" />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+const tableHeaders = ['Name', 'Date Joined', 'University ID', 'Actions']
+const skeletonRows = 6
+</script>
