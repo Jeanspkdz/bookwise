@@ -133,15 +133,10 @@
               :loading="props.approvingUserId === row.original.id"
               @approve-user="approveUser"
             />
-            <UButton
-              color="error"
-              variant="soft"
-              size="sm"
-              icon="i-lucide-circle-x"
-              disabled
-              :aria-label="`Reject request for ${row.original.name} (not available yet)`"
-              title="Account rejection is not available yet."
-              class="size-8 justify-center px-0"
+            <UserManagementRejectAccountRequestModal
+              :user="row.original"
+              :loading="props.rejectingUserId === row.original.id"
+              @reject-user="rejectUser"
             />
           </div>
         </template>
@@ -178,10 +173,12 @@ const props = defineProps<{
   pending: boolean
   error: unknown
   approvingUserId: UserManagementUser['id'] | null
+  rejectingUserId: UserManagementUser['id'] | null
 }>()
 
 const emit = defineEmits<{
   approveUser: Parameters<ApproveUserEventHandler>
+  rejectUser: Parameters<RejectUserEventHandler>
 }>()
 
 const tableRef = useTemplateRef('usersTable')
@@ -233,5 +230,9 @@ const getSortIcon = (direction: false | 'asc' | 'desc') => {
 
 const approveUser = (userId: UserManagementUser['id']) => {
   emit('approveUser', userId)
+}
+
+const rejectUser = (userId: UserManagementUser['id']) => {
+  emit('rejectUser', userId)
 }
 </script>

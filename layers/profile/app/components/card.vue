@@ -19,7 +19,7 @@
     >
       <template #name>
         <UTooltip
-          :text="isAccountApproved ? 'Approved Account' : 'Pending Approval'"
+          :text="statusLabel"
           :delay-duration="400"
           arrow
           :content="{
@@ -27,7 +27,7 @@
           }"
         >
           <UIcon
-            :name="isAccountApproved ? 'jpkdz-verified' : 'jpkdz-warning'"
+            :name="status === 'approved' ? 'jpkdz-verified' : 'jpkdz-warning'"
             class="text-secondary-200 cursor-pointer"
           />
         </UTooltip>
@@ -62,14 +62,20 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   username: string
   email: string
   studentCode: string
   phoneNumber: string
   address: string
-  isAccountApproved: boolean
+  status: UserStatus
 }>()
+
+const statusLabel = computed(() => ({
+  pending: 'Pending Approval',
+  approved: 'Approved Account',
+  rejected: 'Account Rejected',
+})[props.status])
 </script>
 
 <style scoped></style>

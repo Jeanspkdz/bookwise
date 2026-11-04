@@ -7,7 +7,7 @@
           :username="user.name"
           :student-code="user.studentCode"
           :address="user.address"
-          :is-account-approved="user.isApproved"
+          :status="user.status"
           :email="user.email"
           :phone-number="user.phoneNumber"
           class="mx-auto"

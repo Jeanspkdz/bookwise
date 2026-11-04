@@ -3,6 +3,7 @@ export type EntityId = string
 export type TimestampValue = Date | string
 
 export type UserRole = 'admin' | 'student'
+export type UserStatus = 'pending' | 'approved' | 'rejected'
 
 export interface User {
   id: EntityId
@@ -12,7 +13,7 @@ export interface User {
   studentCode: string
   phoneNumber: string
   address: string
-  isApproved: boolean
+  status: UserStatus
   role: UserRole
   createdAt: TimestampValue
   updatedAt: TimestampValue

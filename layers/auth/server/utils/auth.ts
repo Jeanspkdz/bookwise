@@ -26,10 +26,10 @@ export const auth = betterAuth({
         type: 'string',
         required: true,
       },
-      isApproved: {
-        type: 'boolean',
+      status: {
+        type: ['pending', 'approved', 'rejected'],
         required: false,
-        defaultValue: false,
+        defaultValue: 'pending',
         input: false,
       },
       role: {

@@ -37,8 +37,7 @@
 
         <h3 class="text-highlighted text-xl font-semibold">Approve Account Request</h3>
         <p class="text-toned mt-4 max-w-sm text-sm leading-6">
-          Approve the student's account request and grant access. A confirmation email will be sent
-          upon approval.
+          Approve the student's account request and grant access.
         </p>
       </div>
     </template>

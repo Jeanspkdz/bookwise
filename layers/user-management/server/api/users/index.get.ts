@@ -4,7 +4,7 @@ import { getServerSession } from '~~/layers/auth/server/utils/session'
 import { user } from '~~/layers/shared/server/db/schema/auth.schema'
 
 const routeQueryValidator = z.object({
-  approvalStatus: z.enum(['all', 'approved', 'pending']).default('all'),
+  status: z.enum(['all', 'pending', 'approved', 'rejected']).default('all'),
   role: z.enum(['admin', 'student']).optional(),
   search: z.string().trim().min(1).optional(),
 })
@@ -29,15 +29,11 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const { approvalStatus, role, search } = routeQueryValidationResult.data
+  const { status, role, search } = routeQueryValidationResult.data
   const filters = []
 
-  if (approvalStatus === 'pending') {
-    filters.push(eq(user.isApproved, false))
-  }
-
-  if (approvalStatus === 'approved') {
-    filters.push(eq(user.isApproved, true))
+  if (status !== 'all') {
+    filters.push(eq(user.status, status))
   }
 
   if (role) {
@@ -60,9 +56,12 @@ export default defineEventHandler(async (event) => {
       id: user.id,
       name: user.name,
       email: user.email,
+      image: user.image,
       dateJoined: user.createdAt,
       universityId: user.studentCode,
-      isApproved: user.isApproved,
+      phoneNumber: user.phoneNumber,
+      address: user.address,
+      status: user.status,
       role: user.role,
     })
     .from(user)

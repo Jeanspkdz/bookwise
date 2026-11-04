@@ -29,15 +29,13 @@ export function useUsers(options: UseUsersOptions = {}) {
     },
   })
 
-  const approveUser = async (
+  const updateStatus = async (
     id: ApproveUserPayload,
+    action: 'approve' | 'reject',
   ): Promise<Result<ApproveUserResponse, string>> => {
     try {
-      const response = await $fetch<ApproveUserResponse>(`/api/users/${id}`, {
-        method: 'PATCH',
-        body: {
-          isApproved: true,
-        },
+      const response = await $fetch<ApproveUserResponse>(`/api/users/${id}/${action}`, {
+        method: 'POST',
       })
 
       data.value = (data.value ?? []).filter((user) => user.id !== response.updatedUser.id)
@@ -49,10 +47,13 @@ export function useUsers(options: UseUsersOptions = {}) {
     } catch {
       return {
         type: 'failure',
-        error: 'Something went wrong. Failed to approve user',
+        error: `Something went wrong. Failed to ${action} user`,
       }
     }
   }
+
+  const approveUser = (id: ApproveUserPayload) => updateStatus(id, 'approve')
+  const rejectUser = (id: ApproveUserPayload) => updateStatus(id, 'reject')
 
   return {
     users: computed(() => data.value ?? []),
@@ -60,5 +61,6 @@ export function useUsers(options: UseUsersOptions = {}) {
     error,
     refresh,
     approveUser,
+    rejectUser,
   }
 }

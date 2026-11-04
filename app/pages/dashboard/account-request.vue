@@ -34,28 +34,15 @@
 
     <template #body>
       <div class="rounded-xl bg-white p-4 sm:p-5">
-        <div
-          class="mb-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-between sm:text-center"
-        >
-          <h3 class="text-xl font-semibold">Pending Accounts</h3>
-          <UBadge
-            color="primary"
-            variant="soft"
-            size="lg"
-          >
-            {{ users.length }} pending
-          </UBadge>
-        </div>
-
-        <div class="max-w-full overflow-x-auto">
-          <UserManagementTable
-            :users="users"
-            :pending="pending"
-            :error="error"
-            :approving-user-id="approvingUserId"
-            @approve-user="handleApproveUser"
-          />
-        </div>
+        <UserManagementTable
+          :users="users"
+          :pending="pending"
+          :error="error"
+          :approving-user-id="approvingUserId"
+          :rejecting-user-id="rejectingUserId"
+          @approve-user="handleApproveUser"
+          @reject-user="handleRejectUser"
+        />
       </div>
     </template>
   </UDashboardPanel>
@@ -68,10 +55,12 @@ definePageMeta({
 
 const toast = useToast()
 const approvingUserId = ref<UserManagementUser['id'] | null>(null)
-const { users, pending, error, approveUser } = useUsers({
+const rejectingUserId = ref<UserManagementUser['id'] | null>(null)
+const { users, pending, error, approveUser, rejectUser } = useUsers({
   fetchUsers: true,
   filters: {
-    approvalStatus: 'pending',
+    status: 'pending',
+    role: 'student',
   },
 })
 
@@ -97,6 +86,16 @@ const handleApproveUser: ApproveUserEventHandler = async (userId) => {
     icon: 'i-lucide-triangle-alert',
   })
 }
-</script>
 
-<style scoped></style>
+const handleRejectUser: RejectUserEventHandler = async (userId) => {
+  rejectingUserId.value = userId
+  const result = await rejectUser(userId)
+  rejectingUserId.value = null
+
+  toast.add(
+    result.type === 'success'
+      ? { title: 'Account rejected', description: result.data.updatedUser.name, color: 'primary' }
+      : { title: 'Account rejection failed', description: result.error, color: 'error' },
+  )
+}
+</script>
