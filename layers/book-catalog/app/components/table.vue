@@ -7,6 +7,7 @@
   >
     <UTable
       ref="booksTable"
+      class="book-catalog-table"
       v-model:sorting="sorting"
       v-model:pagination="pagination"
       :data="books"
@@ -16,7 +17,7 @@
       sticky
       @select="selectBook"
       :ui="{
-        base: 'min-w-[860px] w-full overflow-x-auto rounded-xl border border-default',
+        base: 'min-w-[860px] w-full table-fixed rounded-xl border border-default',
         thead: 'bg-primary-50 border-0',
         tr: 'cursor-pointer hover:bg-primary-50/70 transition-colors',
         th: 'sticky top-0 z-10 border-b border-default bg-primary-50 px-4 py-3 text-sm font-medium text-default',
@@ -94,7 +95,7 @@
             alt="Book cover"
             class="h-10 w-8 rounded-sm object-cover"
           />
-          <p class="text-highlighted font-medium">{{ row.original.name }}</p>
+          <p class="text-highlighted min-w-0 flex-1 truncate font-medium">{{ row.original.name }}</p>
         </div>
       </template>
 
@@ -246,4 +247,29 @@ const selectBook = (_event: Event, row: TableRow<Book>) => {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+:deep(.book-catalog-table th:nth-child(1)),
+:deep(.book-catalog-table td:nth-child(1)) {
+  width: 32%;
+}
+
+:deep(.book-catalog-table th:nth-child(2)),
+:deep(.book-catalog-table td:nth-child(2)) {
+  width: 20%;
+}
+
+:deep(.book-catalog-table th:nth-child(3)),
+:deep(.book-catalog-table td:nth-child(3)) {
+  width: 18%;
+}
+
+:deep(.book-catalog-table th:nth-child(4)),
+:deep(.book-catalog-table td:nth-child(4)) {
+  width: 16%;
+}
+
+:deep(.book-catalog-table th:nth-child(5)),
+:deep(.book-catalog-table td:nth-child(5)) {
+  width: 14%;
+}
+</style>

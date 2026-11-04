@@ -1,122 +1,159 @@
 <template>
-  <UserManagementTableSkeleton v-if="props.pending" />
+  <UserManagementTableSkeleton
+    v-if="props.pending"
+    :sorting="sorting"
+  />
 
   <div
     v-else
     class="space-y-4"
   >
-    <UTable
-      ref="usersTable"
-      v-model:sorting="sorting"
-      v-model:pagination="pagination"
-      :data="props.users"
-      :columns="columns"
-      :sorting-options="sortingOptions"
-      :pagination-options="paginationOptions"
-      sticky
-      :ui="{
-        base: 'min-w-[760px] w-full overflow-x-auto rounded-xl border border-default',
-        thead: 'bg-primary-50 border-0',
-        tr: 'hover:bg-primary-50/70 transition-colors',
-        th: 'sticky top-0 z-10 border-b border-default bg-primary-50 px-4 py-3 text-sm font-medium text-default',
-        td: 'border-b border-default px-4 py-4 text-sm align-middle last:border-b-0',
-      }"
-    >
-      <template #empty>
-        <div
-          v-if="props.error"
-          class="p-6"
-        >
-          <UAlert
-            color="error"
-            icon="i-lucide-triangle-alert"
-            title="Unable to load account requests"
-            description="Something went wrong while fetching pending account requests. Please try again later."
-          />
-        </div>
-        <div
-          v-else
-          class="text-toned px-6 py-12 text-center text-sm"
-        >
-          No pending account requests.
-        </div>
-      </template>
+    <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <h3 class="text-highlighted text-lg font-semibold sm:text-xl">
+        Account Registration Requests
+      </h3>
+    </div>
 
-      <template #name-header="{ column }">
-        <UButton
-          color="neutral"
-          variant="ghost"
-          label="Name"
-          :icon="getSortIcon(column.getIsSorted())"
-          class="-mx-2"
-          @click="column.getToggleSortingHandler()?.($event)"
-        />
-      </template>
-
-      <template #dateJoined-header="{ column }">
-        <UButton
-          color="neutral"
-          variant="ghost"
-          label="Date Joined"
-          :icon="getSortIcon(column.getIsSorted())"
-          class="-mx-2"
-          @click="column.getToggleSortingHandler()?.($event)"
-        />
-      </template>
-
-      <template #universityId-header="{ column }">
-        <UButton
-          color="neutral"
-          variant="ghost"
-          label="University ID"
-          :icon="getSortIcon(column.getIsSorted())"
-          class="-mx-2"
-          @click="column.getToggleSortingHandler()?.($event)"
-        />
-      </template>
-
-      <template #name-cell="{ row }">
-        <div class="flex items-center gap-3">
-          <UAvatar
-            :alt="row.original.name"
-            :src="undefined"
-            size="lg"
-          />
-          <div class="min-w-0">
-            <p class="text-highlighted truncate font-medium">{{ row.original.name }}</p>
-            <p class="text-toned truncate text-xs">{{ row.original.email }}</p>
+    <div class="max-w-full overflow-x-auto">
+      <UTable
+        ref="usersTable"
+        v-model:sorting="sorting"
+        v-model:pagination="pagination"
+        :data="props.users"
+        :columns="columns"
+        :sorting-options="sortingOptions"
+        :pagination-options="paginationOptions"
+        sticky
+        :ui="{
+          base: 'min-w-[760px] w-full',
+          thead: 'border-0',
+          tr: 'transition-colors hover:bg-primary-50/70',
+          th: 'sticky top-0 z-10 border-0 bg-primary-50 px-4 py-3 text-xs font-medium text-muted first:rounded-tl-md last:rounded-tr-md sm:text-sm',
+          td: 'border-b border-default px-4 py-3.5 align-middle text-sm last:border-b-0',
+        }"
+      >
+        <template #empty>
+          <div
+            v-if="props.error"
+            class="p-6"
+          >
+            <UAlert
+              color="error"
+              icon="i-lucide-triangle-alert"
+              title="Unable to load account requests"
+              description="Something went wrong while fetching pending account requests. Please try again later."
+            />
           </div>
-        </div>
-      </template>
+          <div
+            v-else
+            class="flex flex-col items-center gap-2 px-6 py-12 text-center"
+          >
+            <UIcon
+              name="i-lucide-user-round-check"
+              class="text-muted size-7"
+            />
+            <p class="text-highlighted text-sm font-medium">No pending account requests</p>
+            <p class="text-toned text-sm">New student registrations will appear here.</p>
+          </div>
+        </template>
 
-      <template #dateJoined-cell="{ row }">
-        <NuxtTime
-          :datetime="row.original.dateJoined"
-          year="numeric"
-          month="short"
-          day="2-digit"
-          locale="en"
-        />
-      </template>
+        <template #name-header="{ column }">
+          <UButton
+            color="neutral"
+            variant="ghost"
+            label="Name"
+            :icon="getSortIcon(column.getIsSorted())"
+            class="-mx-2"
+            @click="column.getToggleSortingHandler()?.($event)"
+          />
+        </template>
 
-      <template #actions-cell="{ row }">
-        <UserManagementApproveAccountRequestModal
-          :user="row.original"
-          :loading="props.approvingUserId === row.original.id"
-          @approve-user="approveUser"
-        />
-      </template>
-    </UTable>
+        <template #dateJoined-header="{ column }">
+          <UButton
+            color="neutral"
+            variant="ghost"
+            label="Date Joined"
+            :icon="getSortIcon(column.getIsSorted())"
+            class="-mx-2"
+            @click="column.getToggleSortingHandler()?.($event)"
+          />
+        </template>
+
+        <template #universityId-header="{ column }">
+          <UButton
+            color="neutral"
+            variant="ghost"
+            label="University ID No"
+            :icon="getSortIcon(column.getIsSorted())"
+            class="-mx-2"
+            @click="column.getToggleSortingHandler()?.($event)"
+          />
+        </template>
+
+        <template #actions-header>
+          <span class="-mx-2 inline-flex items-center px-2 py-1.5">Actions</span>
+        </template>
+
+        <template #name-cell="{ row }">
+          <div class="flex min-w-0 items-center gap-3">
+            <UAvatar
+              :alt="row.original.name"
+              :src="row.original.image ?? undefined"
+              size="md"
+              class="shrink-0"
+            />
+            <div class="min-w-0">
+              <p class="text-highlighted truncate font-semibold">{{ row.original.name }}</p>
+              <p class="text-toned truncate text-xs">{{ row.original.email }}</p>
+            </div>
+          </div>
+        </template>
+
+        <template #dateJoined-cell="{ row }">
+          <NuxtTime
+            :datetime="row.original.dateJoined"
+            year="numeric"
+            month="short"
+            day="2-digit"
+            locale="en"
+            class="font-medium whitespace-nowrap tabular-nums"
+          />
+        </template>
+
+        <template #universityId-cell="{ row }">
+          <span class="font-medium whitespace-nowrap tabular-nums">
+            {{ row.original.universityId }}
+          </span>
+        </template>
+
+        <template #actions-cell="{ row }">
+          <div class="flex items-center gap-2">
+            <UserManagementApproveAccountRequestModal
+              :user="row.original"
+              :loading="props.approvingUserId === row.original.id"
+              @approve-user="approveUser"
+            />
+            <UButton
+              color="error"
+              variant="soft"
+              size="sm"
+              icon="i-lucide-circle-x"
+              disabled
+              :aria-label="`Reject request for ${row.original.name} (not available yet)`"
+              title="Account rejection is not available yet."
+              class="size-8 justify-center px-0"
+            />
+          </div>
+        </template>
+      </UTable>
+    </div>
 
     <div
       v-if="props.users.length"
       class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
     >
       <p class="text-toned text-sm">
-        Showing {{ (tableRef?.tableApi.getState().pagination.pageIndex || 0) + 1 }}-{{
-          tableRef?.tableApi.getPageCount()
-        }}
-        of {{ props.users.length }} account requests
+        Showing {{ rangeStart }}–{{ rangeEnd }} of {{ props.users.length }} account requests
       </p>
 
       <UPagination
@@ -152,11 +189,11 @@ const tableRef = useTemplateRef('usersTable')
 const columns: TableColumn<UserManagementUser>[] = [
   { accessorKey: 'name', header: 'Name', sortingFn: 'textCaseSensitive' },
   { accessorKey: 'dateJoined', header: 'Date Joined', sortingFn: 'datetime' },
-  { accessorKey: 'universityId', header: 'University ID', sortingFn: 'textCaseSensitive' },
+  { accessorKey: 'universityId', header: 'University ID No', sortingFn: 'textCaseSensitive' },
   { id: 'actions', header: 'Actions', enableSorting: false },
 ]
 
-const sorting = ref<SortingState>([])
+const sorting = ref<SortingState>([{ id: 'dateJoined', desc: false }])
 const pagination = ref<PaginationState>({
   pageIndex: 0,
   pageSize: 10,
@@ -174,6 +211,13 @@ const sortingOptions = {
 const paginationOptions = {
   getPaginationRowModel: getPaginationRowModel(),
 }
+
+const rangeStart = computed(() =>
+  props.users.length ? pagination.value.pageIndex * pagination.value.pageSize + 1 : 0,
+)
+const rangeEnd = computed(() =>
+  Math.min((pagination.value.pageIndex + 1) * pagination.value.pageSize, props.users.length),
+)
 
 const getSortIcon = (direction: false | 'asc' | 'desc') => {
   if (direction === 'asc') {
