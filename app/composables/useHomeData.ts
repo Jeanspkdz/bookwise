@@ -1,5 +1,32 @@
+import type { Result } from '~~/layers/shared/shared/types/result'
+import { useRequestFetch } from '#app'
+
 export function useHomeData() {
-  const { getFeaturedBook, getPopularBooks } = useBooks()
+  const requestFetch = useRequestFetch()
+
+  const getFeaturedBook = async (): Promise<Result<GetFeaturedBookResponse, string>> => {
+    try {
+      const data = await requestFetch<GetFeaturedBookResponse>('/api/book', {
+        method: 'GET',
+        query: { featured: true },
+      })
+      return { type: 'success', data }
+    } catch {
+      return { type: 'failure', error: 'Something went wrong. Failed to get featured book' }
+    }
+  }
+
+  const getPopularBooks = async (): Promise<Result<GetPopularBooksResponse, string>> => {
+    try {
+      const data = await requestFetch<GetPopularBooksResponse>('/api/book', {
+        method: 'GET',
+        query: { sort: 'popular' },
+      })
+      return { type: 'success', data }
+    } catch {
+      return { type: 'failure', error: 'Something went wrong. Failed to get popular books' }
+    }
+  }
 
   const {
     data: featuredData,

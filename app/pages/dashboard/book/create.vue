@@ -45,7 +45,7 @@ definePageMeta({
   colorMode: 'light',
 })
 
-const { createBook } = useBooks()
+const { createBook } = useBookActions()
 
 const toast = useToast()
 

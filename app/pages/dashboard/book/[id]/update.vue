@@ -82,18 +82,18 @@ definePageMeta({
 const route = useRoute()
 const toast = useToast()
 const bookId = computed(() => String(route.params.id ?? ''))
-const { book, pending, updateBook } = useBook(bookId)
+const { book, pending } = useBookDetail(bookId)
+const { updateBook } = useBookActions()
 
 const handleUpdateBook: UpdateBookEventHandler = async (payload) => {
   if (!book.value) {
     return
   }
 
-  const result = await updateBook({
-    ...payload,
-  })
+  const result = await updateBook(bookId.value, payload, book.value)
 
   if (result.type === 'success') {
+    book.value = result.data.updatedBook
     toast.add({
       title: 'Book updated',
       description: result.data.updatedBook.name,

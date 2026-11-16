@@ -1,6 +1,5 @@
 import { desc, sql } from 'drizzle-orm'
 import { z } from 'zod'
-import { getServerSession } from '~~/layers/auth/server/utils/session'
 import { bookSchema } from '~~/layers/shared/server/db/schema/book.schema'
 
 const routeQueryValidator = z.object({
@@ -68,8 +67,6 @@ export default defineCachedEventHandler(
       return { popularBooks }
     }
 
-    await getServerSession(event)
-
     const data = await db.select().from(bookSchema)
 
     return data
@@ -87,7 +84,7 @@ export default defineCachedEventHandler(
       return `books:${query.toString() || 'all'}`
     },
     shouldBypassCache(event) {
-      return getHeader(event, 'bookwise-dashboard-request') === 'true'
+      return getHeader(event, 'bookwise-bypass-cache') === 'true'
     },
   },
 )
