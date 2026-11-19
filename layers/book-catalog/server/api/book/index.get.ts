@@ -5,27 +5,13 @@ import { bookSchema } from '~~/layers/shared/server/db/schema/book.schema'
 const routeQueryValidator = z.object({
   featured: z.stringbool().optional(),
   sort: z.literal('popular').optional(),
+  category: z.string().trim().min(1).optional(),
+  exclude: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(6).optional(),
 })
 
 export default defineCachedEventHandler(
-  // export default defineEventHandler(
   async (event) => {
-    const generatedAt = new Date().toISOString()
-
-    console.log('----------------------------------------')
-    console.log('----------------------------------------')
-    console.log('----------------------------------------')
-    console.log('----------------------------------------')
-    console.log('[get-books] Handler executed')
-    console.log('[get-books] generatedAt:', generatedAt)
-    console.log('[get-books] url:', getRequestURL(event).toString())
-    console.log('[get-books] durmiendo 3 segundos...')
-
-    await new Promise((resolve) => setTimeout(resolve, 3000))
-
-    console.log('[get-books] despertó, continuando...')
-    console.log('----------------------------------------')
-
     const routeQueryValidationResult = await getValidatedQuery(event, routeQueryValidator.safeParse)
 
     if (!routeQueryValidationResult.success) {
@@ -36,7 +22,7 @@ export default defineCachedEventHandler(
       })
     }
 
-    const { featured, sort } = routeQueryValidationResult.data
+    const { featured, sort, category, exclude, limit } = routeQueryValidationResult.data
     const isFeatured = featured === true
     const isPopular = sort === 'popular'
 
@@ -65,6 +51,17 @@ export default defineCachedEventHandler(
         .limit(10)
 
       return { popularBooks }
+    }
+
+    if (category) {
+      const similarBooks = await db
+        .select()
+        .from(bookSchema)
+        .where(sql`${bookSchema.category} ILIKE ${category} AND ${bookSchema.id} <> ${exclude ?? ''}`)
+        .orderBy(desc(bookSchema.rating), desc(bookSchema.createdAt))
+        .limit(limit ?? 6)
+
+      return similarBooks
     }
 
     const data = await db.select().from(bookSchema)

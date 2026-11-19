@@ -91,11 +91,17 @@
       <template #name-cell="{ row }">
         <div class="flex items-center gap-3">
           <NuxtImg
+            loading="lazy"
             :src="row.original.imageUrl"
             alt="Book cover"
             class="h-10 w-8 rounded-sm object-cover"
+            width="32"
+            height="40"
+            format="webp"
           />
-          <p class="text-highlighted min-w-0 flex-1 truncate font-medium">{{ row.original.name }}</p>
+          <p class="text-highlighted min-w-0 flex-1 truncate font-medium">
+            {{ row.original.name }}
+          </p>
         </div>
       </template>
 

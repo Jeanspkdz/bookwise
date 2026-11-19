@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   ],
   modules: ['@nuxt/eslint', '@nuxt/image', '@pinia/nuxt'],
   image: {
-    domains: ['jvxbumdjlq.ufs.sh'],
+    // domains: ['jvxbumdjlq.ufs.sh'],
   },
   routeRules: {
     '/dashboard/**': {

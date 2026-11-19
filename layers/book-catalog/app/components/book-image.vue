@@ -10,20 +10,21 @@
       format="webp"
       :preload="preload"
       :src="imageUrl"
+      decoding="async"
       class="absolute top-0 right-0 h-[88%] w-[88%]"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-type ImagePreload = boolean | {
-  fetchPriority: 'high' | 'low' | 'auto'
-}
-
-const { imageUrl = '/book-cover.webp', coverColor = '#1d2a4a', preload = false } = defineProps<{
+const {
+  imageUrl = '/book-cover.webp',
+  coverColor = '#1d2a4a',
+  preload = false,
+} = defineProps<{
   imageUrl?: string
   coverColor?: string
-  preload?: ImagePreload
+  preload?: boolean
 }>()
 </script>
 
