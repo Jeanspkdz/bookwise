@@ -8,10 +8,12 @@
   >
     <UButton
       color="success"
-      variant="solid"
+      variant="soft"
       size="sm"
-      icon="i-lucide-check"
-      label="Approve Account"
+      icon="i-lucide-circle-check"
+      aria-label="Approve account request"
+      title="Approve account request"
+      class="size-8 justify-center px-0"
       :loading="props.loading"
     />
 
@@ -47,7 +49,7 @@
         block
         color="success"
         size="xl"
-        icon="i-lucide-check"
+        variant="soft"
         label="Approve & Send Confirmation"
         :loading="props.loading"
         @click="

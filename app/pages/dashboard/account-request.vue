@@ -26,7 +26,7 @@
         <template #right>
           <UDashboardSearchButton
             class="hidden justify-start md:flex md:w-full lg:w-[450px]"
-            label="Search account requests by name, email, or status."
+            label="Search users, books by title, author, or genre."
           />
         </template>
       </UDashboardNavbar>

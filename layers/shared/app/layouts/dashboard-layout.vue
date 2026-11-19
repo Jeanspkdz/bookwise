@@ -87,7 +87,7 @@ const navItems: NavigationMenuItem[] = [
   {
     label: 'All Users',
     icon: 'jpkdz-admin-users',
-    to: '/dashboard/home',
+    to: '/dashboard/users',
   },
   {
     label: 'All Books',

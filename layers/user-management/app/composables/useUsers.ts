@@ -1,32 +1,36 @@
+import { toValue } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
 import type { Result } from '~~/layers/shared/shared/types/result'
 
 type UseUsersOptions = {
   fetchUsers?: boolean
-  filters?: GetUsersFilters
+  filters?: MaybeRefOrGetter<GetUsersFilters>
 }
 
 export function useUsers(options: UseUsersOptions = {}) {
-  const { fetchUsers = false, filters = {} } = options
-  const searchParams = new URLSearchParams()
+  const { fetchUsers = false } = options
+  const filters = computed(() => toValue(options.filters) ?? {})
+  const searchParams = computed(() => {
+    const params = new URLSearchParams()
 
-  Object.entries(filters).forEach(([key, value]) => {
-    if (value) {
-      searchParams.set(key, value)
-    }
+    Object.entries(filters.value).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value)
+      }
+    })
+
+    params.sort()
+
+    return params.toString()
   })
-
-  searchParams.sort()
 
   const { data, pending, error, refresh } = useFetch<UserManagementUser[]>('/api/users', {
     method: 'GET',
-    key: `admin-users-${searchParams.toString()}`,
+    key: computed(() => `admin-users-${searchParams.value}`),
     lazy: true,
     immediate: fetchUsers,
     default: () => [],
     query: filters,
-    headers: {
-      'bookwise-dashboard-request': 'true',
-    },
   })
 
   const updateStatus = async (
