@@ -5,3 +5,5 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   vue-demi: true
+minimumReleaseAgeExclude:
+  - nuxt-uploadthing@1.3.0
