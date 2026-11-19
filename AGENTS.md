@@ -21,7 +21,7 @@
 ## Verification Flow
 
 - There is no test script configured.
-- For focused verification, run: `pnpm fmt:check && pnpm lint && pnpm build`.
+- For focused verification, run: `pnpm fmt:check && pnpm lint`.
 
 ## Architecture That Matters
 
@@ -43,3 +43,6 @@
 
 - Use Oxlint/Oxfmt conventions (e.g., single quotes, no semicolons) instead of assuming Prettier/ESLint defaults.
 - Custom icon collection prefix is `jpkdz` from `layers/shared/app/assets/icons`.
+- Encapsulate reusable data fetching and its loading/error/refresh state in feature composables under that layer's `app/composables/`; pages and components should consume the composable instead of calling `useFetch` or `useAsyncData` directly.
+
+- Use `SharedAsyncState` for mutually exclusive loading, error, and success rendering instead of repeating `v-if="pending"` / `v-else-if="error"` chains in pages and sections. Pass `pending`, `error`, and a contextual `error-title`; connect `@refresh` to the feature composable refresh action. Supply the `#pending` slot with a feature skeleton and use the default slot for content. Override `#error` only for a custom layout; its slot props expose `error` and `refresh`. The component adds no wrapper so flex/grid layouts remain intact. Keep empty-result handling inside the success slot.

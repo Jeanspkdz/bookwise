@@ -1,93 +1,37 @@
 <template>
   <UContainer>
-    <div class="text-secondary-200 flex items-center gap-x-28 py-20">
-      <HeroSectionSkeleton v-if="pending" />
-
-      <HeroSectionError
-        v-else-if="error"
+    <div
+      class="text-secondary-200 flex flex-col gap-12 py-12 lg:flex-row lg:items-center lg:gap-x-20 lg:py-20"
+    >
+      <SharedAsyncState
+        :pending="pending"
+        :error="error"
         @refresh="emit('refresh')"
-      />
-
-      <template v-else>
-        <div class="flex-7/12">
-          <h2 class="mb-5 text-5xl font-bold text-balance text-white">
-            {{ book?.name ?? 'Featured Book' }}
-          </h2>
-
-          <div class="mb-5 flex gap-5">
-            <p>
-              By <span class="text-primary font-bold">{{ book?.author ?? '-' }}</span>
-            </p>
-            <p>
-              Category <span class="text-primary font-bold">{{ book?.category ?? '-' }}</span>
-            </p>
-            <p class="flex items-center">
-              <UIcon
-                name="jpkdz-star"
-                class="brightness-0 invert"
-              />
-              <span class="text-primary ml-1.5 font-bold">{{ book?.rating ?? '-' }}</span
-              >/5
-            </p>
-          </div>
-
-          <div class="mb-5 flex gap-5">
-            <p>
-              Total Books : <span class="text-primary font-bold"> {{ book?.totalBooks ?? 0 }}</span>
-            </p>
-            <p>
-              Available Books :
-              <span class="text-primary font-bold"> {{ book?.availableBooks ?? 0 }}</span>
-            </p>
-          </div>
-
-          <p class="max-w-[60ch] text-pretty">
-            {{ description }}
-          </p>
-
-          <UButton
-            class="font-bebas mt-9 uppercase"
-            icon="jpkdz:book"
-            size="xl"
-          >
-            Borrow Book Request
-          </UButton>
-        </div>
-
-        <div class="relative flex-5/12">
-          <BookCatalogBookImage
-            class="relative z-10 h-[385px] w-[277px]"
-            :image-url="featuredBook?.imageUrl"
-            :cover-color="featuredBook?.coverColor"
-            :preload="{ fetchPriority: 'high' }"
-          />
-          <BookCatalogBookImage
-            class="absolute! top-0 left-[35%] h-[385px] w-[277px] translate-y-9 rotate-10 blur"
-            :image-url="featuredBook?.imageUrl"
-            :cover-color="featuredBook?.coverColor"
-          />
-        </div>
-      </template>
+      >
+        <template #pending>
+          <HeroSectionSkeleton />
+        </template>
+        <template #error="{ refresh }">
+          <HeroSectionError @refresh="refresh" />
+        </template>
+        <BookCatalogBookOverview
+          :book="featuredBook"
+          :detail="detail"
+        />
+      </SharedAsyncState>
     </div>
   </UContainer>
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   featuredBook: Book | null
   pending?: boolean
   error?: string | null
+  detail?: boolean
 }>()
 
 const emit = defineEmits<{
   refresh: []
 }>()
-
-const book = computed(() => props.featuredBook)
-
-const description = computed(
-  () => props.featuredBook?.description ?? 'No featured book available right now.',
-)
 </script>
-
-<style scoped></style>
