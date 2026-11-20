@@ -16,13 +16,10 @@
 
     <div class="max-w-full overflow-x-auto">
       <UTable
-        ref="usersTable"
         v-model:sorting="sorting"
-        v-model:pagination="pagination"
         :data="props.users"
         :columns="columns"
         :sorting-options="sortingOptions"
-        :pagination-options="paginationOptions"
         sticky
         :ui="{
           base: 'min-w-[760px] w-full',
@@ -148,16 +145,17 @@
       class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
     >
       <p class="text-toned text-sm">
-        Showing {{ rangeStart }}–{{ rangeEnd }} of {{ props.users.length }} account requests
+        Showing {{ rangeStart }}–{{ rangeEnd }} of {{ props.pagination.totalItems }} account
+        requests
       </p>
 
       <UPagination
-        :page="pagination.pageIndex + 1"
-        :items-per-page="pagination.pageSize"
-        :total="props.users.length"
+        :page="props.pagination.page"
+        :items-per-page="props.pagination.pageSize"
+        :total="props.pagination.totalItems"
         show-edges
         :sibling-count="1"
-        @update:page="tableRef?.tableApi?.setPageIndex($event - 1)"
+        @update:page="emit('updatePage', $event)"
       />
     </div>
   </div>
@@ -165,11 +163,12 @@
 
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import type { PaginationState, SortingState } from '@tanstack/vue-table'
-import { getPaginationRowModel } from '@tanstack/vue-table'
+import type { SortingState } from '@tanstack/vue-table'
+import type { PaginationMetadata } from '~~/layers/shared/shared/types/pagination'
 
 const props = defineProps<{
   users: UserManagementUser[]
+  pagination: PaginationMetadata
   pending: boolean
   error: unknown
   approvingUserId: UserManagementUser['id'] | null
@@ -179,9 +178,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   approveUser: Parameters<ApproveUserEventHandler>
   rejectUser: Parameters<RejectUserEventHandler>
+  updatePage: [page: number]
 }>()
-
-const tableRef = useTemplateRef('usersTable')
 
 const columns: TableColumn<UserManagementUser>[] = [
   { accessorKey: 'name', header: 'Name', sortingFn: 'textCaseSensitive' },
@@ -191,11 +189,6 @@ const columns: TableColumn<UserManagementUser>[] = [
 ]
 
 const sorting = ref<SortingState>([{ id: 'dateJoined', desc: false }])
-const pagination = ref<PaginationState>({
-  pageIndex: 0,
-  pageSize: 10,
-})
-
 const sortingOptions = {
   isMultiSortEvent: (event: unknown) => {
     if (!(event instanceof MouseEvent) && !(event instanceof KeyboardEvent)) {
@@ -205,15 +198,11 @@ const sortingOptions = {
   },
 }
 
-const paginationOptions = {
-  getPaginationRowModel: getPaginationRowModel(),
-}
-
 const rangeStart = computed(() =>
-  props.users.length ? pagination.value.pageIndex * pagination.value.pageSize + 1 : 0,
+  props.pagination.totalItems ? (props.pagination.page - 1) * props.pagination.pageSize + 1 : 0,
 )
 const rangeEnd = computed(() =>
-  Math.min((pagination.value.pageIndex + 1) * pagination.value.pageSize, props.users.length),
+  Math.min(props.pagination.page * props.pagination.pageSize, props.pagination.totalItems),
 )
 
 const getSortIcon = (direction: false | 'asc' | 'desc') => {

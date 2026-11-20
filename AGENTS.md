@@ -38,6 +38,7 @@
 - `NUXT_DATABASE_URL` is required for Drizzle commands and DB-backed server handlers (`layers/shared/server/utils/db.ts`).
 - DB schema source: `layers/shared/server/db/schema/*.ts`.
 - Generated migrations live in `layers/shared/server/db/migrations/`; prefer generating via Drizzle scripts instead of hand-editing `meta/*.json`.
+- Collection GET endpoints must use `layers/shared/server/utils/pagination.ts`: extend `paginationQuerySchema`, use `getPaginationParams` for the SQL `limit` and `offset`, and return `createPaginatedResponse` with a filtered total count. The shared maximum page size is `MAX_RECORDS_PER_REQUEST` (25); use server-driven pagination in clients. Single-record and action endpoints do not need pagination.
 
 ## Conventions To Follow
 

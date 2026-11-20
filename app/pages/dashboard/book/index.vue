@@ -53,8 +53,11 @@
         <div class="max-w-full overflow-x-auto">
           <BookCatalogTable
             :books="books"
+            :pagination="pagination"
             :pending="pending"
             :error="error"
+            @update-page="setPage"
+            @update-sort="setSort"
             @delete-book="handleDeleteBook"
             @select-book="handleSelectBook"
           />
@@ -70,7 +73,7 @@ definePageMeta({
 })
 
 const toast = useToast()
-const { books, pending, error, refresh } = useAdminBookCatalog()
+const { books, pagination, setPage, setSort, pending, error, refresh } = useAdminBookCatalog()
 const { deleteBook } = useBookActions()
 
 const handleSelectBook: SelectBookEventHandler = async (bookId) => {

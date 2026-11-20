@@ -1,4 +1,4 @@
-import { posix } from 'node:path'
+import { posix } from 'node:path' //or pathe
 
 import { defineConfig } from 'drizzle-kit'
 

@@ -54,8 +54,10 @@
         <div class="max-w-full overflow-x-auto">
           <UserManagementAllUsersTable
             :users="users"
+            :pagination="pagination"
             :pending="pending"
             :error="error"
+            @update-page="setPage"
           />
         </div>
       </div>
@@ -87,7 +89,7 @@ const filters = computed<GetUsersFilters>(() => ({
   search: debouncedSearch.value || undefined,
 }))
 
-const { users, pending, error } = useUsers({
+const { users, pagination, setPage, pending, error } = useUsers({
   fetchUsers: true,
   filters,
 })

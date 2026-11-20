@@ -3,6 +3,7 @@ import { pgTable } from 'drizzle-orm/pg-core'
 import * as t from 'drizzle-orm/pg-core'
 
 import { timestamps } from './_column.helpers'
+import type {Book } from '~~/layers/shared/shared/types/entities'
 
 export const bookSchema = pgTable('book', {
   id: t
@@ -23,4 +24,4 @@ export const bookSchema = pgTable('book', {
   videoKey: t.text(),
   coverColor: t.varchar({ length: 7 }).notNull().default('#FFFFFF'),
   ...timestamps,
-})
+} satisfies Record<keyof Book, unknown> & Record<string, unknown>)

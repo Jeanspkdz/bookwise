@@ -1,4 +1,5 @@
 import type { Result } from '~~/layers/shared/shared/types/result'
+
 import { useRequestFetch } from '#app'
 
 export function useHomeData() {
@@ -20,7 +21,7 @@ export function useHomeData() {
     try {
       const data = await requestFetch<GetPopularBooksResponse>('/api/book', {
         method: 'GET',
-        query: { sort: 'popular' },
+        query: { sort: 'rating', order: 'desc', page: 1, pageSize: 10 },
       })
       return { type: 'success', data }
     } catch {
@@ -63,7 +64,7 @@ export function useHomeData() {
     }
 
     return {
-      popularBooks: result.data.popularBooks,
+      popularBooks: result.data.items,
       popularError: null,
     }
   })

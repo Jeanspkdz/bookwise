@@ -6,14 +6,11 @@
     class="space-y-4"
   >
     <UTable
-      ref="booksTable"
       class="book-catalog-table"
       v-model:sorting="sorting"
-      v-model:pagination="pagination"
       :data="books"
       :columns="columns"
       :sorting-options="sortingOptions"
-      :pagination-options="paginationOptions"
       sticky
       @select="selectBook"
       :ui="{
@@ -169,19 +166,16 @@
       class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
     >
       <p class="text-toned text-sm">
-        Showing {{ (tableRef?.tableApi.getState().pagination.pageIndex || 0) + 1 }}-{{
-          tableRef?.tableApi.getPageCount()
-        }}
-        of {{ books.length }} books
+        Showing {{ rangeStart }}–{{ rangeEnd }} of {{ pagination.totalItems }} books
       </p>
 
       <UPagination
-        :page="pagination.pageIndex + 1"
+        :page="pagination.page"
         :items-per-page="pagination.pageSize"
-        :total="books.length"
+        :total="pagination.totalItems"
         show-edges
         :sibling-count="1"
-        @update:page="tableRef?.tableApi?.setPageIndex($event - 1)"
+        @update:page="emit('updatePage', $event)"
       />
     </div>
   </div>
@@ -189,21 +183,26 @@
 
 <script setup lang="ts">
 import type { TableColumn, TableRow } from '@nuxt/ui'
-import type { PaginationState, SortingState } from '@tanstack/vue-table'
-import { getPaginationRowModel } from '@tanstack/vue-table'
+import type { SortingState } from '@tanstack/vue-table'
+import type { PaginationMetadata } from '~~/layers/shared/shared/types/pagination'
 
-const { books } = defineProps<{
+const props = defineProps<{
   books: Book[]
+  pagination: PaginationMetadata
   pending: boolean
   error: unknown
 }>()
+const { books } = toRefs(props)
 
 const emit = defineEmits<{
   deleteBook: Parameters<DeleteBookEventHandler>
   selectBook: Parameters<SelectBookEventHandler>
+  updatePage: [page: number]
+  updateSort: [
+    field: 'author' | 'rating' | 'category' | 'name' | 'createdAt',
+    direction: 'asc' | 'desc',
+  ]
 }>()
-
-const tableRef = useTemplateRef('booksTable')
 
 const columns: TableColumn<Book>[] = [
   { accessorKey: 'name', header: 'Book Title', sortingFn: 'textCaseSensitive' },
@@ -214,12 +213,8 @@ const columns: TableColumn<Book>[] = [
 ]
 
 const sorting = ref<SortingState>([])
-const pagination = ref<PaginationState>({
-  pageIndex: 0,
-  pageSize: 10,
-})
-
 const sortingOptions = {
+  manualSorting: true,
   isMultiSortEvent: (event: unknown) => {
     if (!(event instanceof MouseEvent) && !(event instanceof KeyboardEvent)) {
       return false
@@ -228,9 +223,25 @@ const sortingOptions = {
   },
 }
 
-const paginationOptions = {
-  getPaginationRowModel: getPaginationRowModel(),
-}
+watch(sorting, (value) => {
+  const column = value[0]
+  if (column && ['author', 'rating', 'category', 'name', 'createdAt'].includes(column.id)) {
+    emit(
+      'updateSort',
+      column.id as 'author' | 'rating' | 'category' | 'name' | 'createdAt',
+      column.desc ? 'desc' : 'asc',
+    )
+  } else {
+    emit('updateSort', 'createdAt', 'asc')
+  }
+})
+
+const rangeStart = computed(() =>
+  props.pagination.totalItems ? (props.pagination.page - 1) * props.pagination.pageSize + 1 : 0,
+)
+const rangeEnd = computed(() =>
+  Math.min(props.pagination.page * props.pagination.pageSize, props.pagination.totalItems),
+)
 
 const getSortIcon = (direction: false | 'asc' | 'desc') => {
   if (direction === 'asc') {

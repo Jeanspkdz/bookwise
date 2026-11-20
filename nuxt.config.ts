@@ -13,6 +13,9 @@ export default defineNuxtConfig({
   image: {
     // domains: ['jvxbumdjlq.ufs.sh'],
   },
+  runtimeConfig:{
+    
+  },
   routeRules: {
     '/dashboard/**': {
       appLayout: 'dashboard-layout',

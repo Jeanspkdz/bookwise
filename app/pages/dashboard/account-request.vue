@@ -36,12 +36,14 @@
       <div class="rounded-xl bg-white p-4 sm:p-5">
         <UserManagementTable
           :users="users"
+          :pagination="pagination"
           :pending="pending"
           :error="error"
           :approving-user-id="approvingUserId"
           :rejecting-user-id="rejectingUserId"
           @approve-user="handleApproveUser"
           @reject-user="handleRejectUser"
+          @update-page="setPage"
         />
       </div>
     </template>
@@ -56,7 +58,7 @@ definePageMeta({
 const toast = useToast()
 const approvingUserId = ref<UserManagementUser['id'] | null>(null)
 const rejectingUserId = ref<UserManagementUser['id'] | null>(null)
-const { users, pending, error, approveUser, rejectUser } = useUsers({
+const { users, pagination, setPage, pending, error, approveUser, rejectUser } = useUsers({
   fetchUsers: true,
   filters: {
     status: 'pending',

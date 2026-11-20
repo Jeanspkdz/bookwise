@@ -19,7 +19,7 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
-    databaseUrl: 'DEFAULT_VALUE',
+    databaseUrl: 'DEFAULT_VALUE', // NUXT_DATABASE_URL -> private
   },
   icon: {
     mode: 'svg',

@@ -1,72 +1,71 @@
-import { desc, sql } from 'drizzle-orm'
+import { count, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { bookSchema } from '~~/layers/shared/server/db/schema/book.schema'
+import {
+  createPaginatedResponse,
+  getPaginationParams,
+  paginationQuerySchema,
+} from '~~/layers/shared/server/utils/pagination'
 
-const routeQueryValidator = z.object({
-  featured: z.stringbool().optional(),
-  sort: z.literal('popular').optional(),
-  category: z.string().trim().min(1).optional(),
-  exclude: z.string().optional(),
-  limit: z.coerce.number().int().min(1).max(6).optional(),
-})
+import { BookQueryBuilder, sortableBookFieldSchema } from '../../utils/book-query'
+
+const routeQueryValidator = z
+  .object({
+    featured: z.stringbool().default(false),
+    sort: sortableBookFieldSchema.default('createdAt'),
+    order: z.enum(['asc', 'desc']).default('asc'),
+    category: z.string().trim().min(1).optional(),
+    exclude: z.string().optional(),
+  })
+  .extend(paginationQuerySchema.shape)
 
 export default defineCachedEventHandler(
   async (event) => {
-    const routeQueryValidationResult = await getValidatedQuery(event, routeQueryValidator.safeParse)
+    const result = await getValidatedQuery(event, routeQueryValidator.safeParse)
 
-    if (!routeQueryValidationResult.success) {
+    if (!result.success) {
       throw createError({
         statusCode: 400,
         statusMessage: 'Invalid query params',
-        data: z.prettifyError(routeQueryValidationResult.error),
+        data: z.prettifyError(result.error),
       })
     }
 
-    const { featured, sort, category, exclude, limit } = routeQueryValidationResult.data
-    const isFeatured = featured === true
-    const isPopular = sort === 'popular'
+    const { featured, category, exclude, page, pageSize, sort, order } = result.data
+    const { limit, offset } = getPaginationParams({ page, pageSize })
+    const query = new BookQueryBuilder()
+      .category(category)
+      .exclude(exclude)
+      .sortBy(sort, order)
+      .build()
 
-    if (isFeatured) {
+    if (featured) {
       const [featuredBook] = await db
         .select()
         .from(bookSchema)
+        .where(query.where)
         .orderBy(sql`RANDOM()`)
         .limit(1)
 
       if (!featuredBook) {
-        throw createError({
-          statusCode: 404,
-          statusMessage: 'Book not found',
-        })
+        throw createError({ statusCode: 404, statusMessage: 'Book not found' })
       }
 
       return { featuredBook }
     }
 
-    if (isPopular) {
-      const popularBooks = await db
+    const [countRows, books] = await Promise.all([
+      db.select({ totalItems: count() }).from(bookSchema).where(query.where),
+      db
         .select()
         .from(bookSchema)
-        .orderBy(desc(bookSchema.rating), desc(bookSchema.createdAt))
-        .limit(10)
+        .where(query.where)
+        .orderBy(...query.orderBy)
+        .limit(limit)
+        .offset(offset),
+    ])
 
-      return { popularBooks }
-    }
-
-    if (category) {
-      const similarBooks = await db
-        .select()
-        .from(bookSchema)
-        .where(sql`${bookSchema.category} ILIKE ${category} AND ${bookSchema.id} <> ${exclude ?? ''}`)
-        .orderBy(desc(bookSchema.rating), desc(bookSchema.createdAt))
-        .limit(limit ?? 6)
-
-      return similarBooks
-    }
-
-    const data = await db.select().from(bookSchema)
-
-    return data
+    return createPaginatedResponse(books, countRows[0]?.totalItems ?? 0, { page, pageSize })
   },
   {
     maxAge: 10,

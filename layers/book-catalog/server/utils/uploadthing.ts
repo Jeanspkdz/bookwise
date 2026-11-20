@@ -17,7 +17,7 @@ export const uploadRouter = {
     .middleware(async () => {
       return {}
     })
-    .onUploadComplete(async ({ metadata, file }) => {
+    .onUploadComplete(async ({ file }) => {
       // This code RUNS ON YOUR SERVER after upload
       console.log('file url', file.ufsUrl)
     }),
@@ -30,7 +30,7 @@ export const uploadRouter = {
     .middleware(async () => {
       return {}
     })
-    .onUploadComplete(async ({ metadata, file }) => {
+    .onUploadComplete(async ({ file }) => {
       console.log('file url', file.ufsUrl)
     }),
 } satisfies FileRouter

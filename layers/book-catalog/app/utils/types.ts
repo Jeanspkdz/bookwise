@@ -1,3 +1,5 @@
+import type { PaginatedResponse } from '~~/layers/shared/shared/types/pagination'
+
 export interface CreateBookPayload extends Omit<
   Book,
   'id' | 'createdAt' | 'updatedAt' | 'imageUrl' | 'videoUrl' | 'availableBooks'
@@ -29,6 +31,4 @@ export type GetFeaturedBookResponse = {
   featuredBook: Book
 }
 
-export type GetPopularBooksResponse = {
-  popularBooks: Book[]
-}
+export type GetPopularBooksResponse = PaginatedResponse<Book>

@@ -1,5 +1,7 @@
 import { toValue } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
+import type { PaginatedResponse } from '~~/layers/shared/shared/types/pagination'
+import { createEmptyPaginatedResponse } from '~~/layers/shared/shared/utils/pagination'
 
 export function useSimilarBooks(
   bookId: MaybeRefOrGetter<Book['id']>,
@@ -9,21 +11,27 @@ export function useSimilarBooks(
   const currentCategory = computed(() => toValue(category))
 
   const {
-    data: similarBooks,
+    data: similarBooksData,
     pending,
     error,
     refresh,
-  } = useFetch<Book[]>('/api/book', {
+  } = useFetch<PaginatedResponse<Book>>('/api/book', {
     key: () => `similar-books-${currentBookId.value}-${currentCategory.value ?? ''}`,
     query: () => ({
       category: currentCategory.value,
       exclude: currentBookId.value,
-      limit: 6,
+      page: 1,
+      pageSize: 6,
     }),
     watch: [currentBookId, currentCategory],
-    default: () => [],
-    immediate: computed(() => Boolean(currentCategory.value)),
+    default: () => createEmptyPaginatedResponse<Book>(1, 6),
+    immediate: Boolean(currentCategory.value),
   })
 
-  return { similarBooks, pending, error, refresh }
+  return {
+    similarBooks: computed(() => similarBooksData.value?.items ?? []),
+    pending,
+    error,
+    refresh,
+  }
 }

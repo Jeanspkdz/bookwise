@@ -1,6 +1,9 @@
 import { toValue } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
+import type { PaginatedResponse } from '~~/layers/shared/shared/types/pagination'
 import type { Result } from '~~/layers/shared/shared/types/result'
+import { DEFAULT_PAGE_SIZE } from '~~/layers/shared/shared/utils/constants'
+import { createEmptyPaginatedResponse } from '~~/layers/shared/shared/utils/pagination'
 
 type UseUsersOptions = {
   fetchUsers?: boolean
@@ -10,49 +13,67 @@ type UseUsersOptions = {
 export function useUsers(options: UseUsersOptions = {}) {
   const { fetchUsers = false } = options
   const filters = computed(() => toValue(options.filters) ?? {})
-  const searchParams = computed(() => {
-    const params = new URLSearchParams()
+  const page = ref(1)
+  const query = computed(() => ({
+    ...filters.value,
+    page: page.value,
+    pageSize: DEFAULT_PAGE_SIZE,
+  }))
+  const queryKey = computed(() => `admin-users-${JSON.stringify(query.value)}`)
 
-    Object.entries(filters.value).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value)
+  const { data, pending, error, refresh } = useFetch<PaginatedResponse<UserManagementUser>>(
+    '/api/users',
+    {
+      method: 'GET',
+      key: queryKey,
+      lazy: true,
+      immediate: fetchUsers,
+      default: () =>
+        createEmptyPaginatedResponse<UserManagementUser>(page.value, DEFAULT_PAGE_SIZE),
+      query,
+    },
+  )
+
+  watch(
+    () => JSON.stringify(filters.value),
+    () => {
+      page.value = 1
+    },
+  )
+
+  watch(
+    () => data.value?.pagination.totalPages,
+    (totalPages) => {
+      const lastPage = Math.max(1, totalPages ?? 1)
+
+      if (page.value > lastPage) {
+        page.value = lastPage
       }
-    })
-
-    params.sort()
-
-    return params.toString()
-  })
-
-  const { data, pending, error, refresh } = useFetch<UserManagementUser[]>('/api/users', {
-    method: 'GET',
-    key: computed(() => `admin-users-${searchParams.value}`),
-    lazy: true,
-    immediate: fetchUsers,
-    default: () => [],
-    query: filters,
-  })
+    },
+  )
 
   const updateStatus = async (
     id: ApproveUserPayload,
     action: 'approve' | 'reject',
   ): Promise<Result<ApproveUserResponse, string>> => {
+    let response: ApproveUserResponse
+
     try {
-      const response = await $fetch<ApproveUserResponse>(`/api/users/${id}/${action}`, {
+      response = await $fetch<ApproveUserResponse>(`/api/users/${id}/${action}`, {
         method: 'POST',
       })
-
-      data.value = (data.value ?? []).filter((user) => user.id !== response.updatedUser.id)
-
-      return {
-        type: 'success',
-        data: response,
-      }
     } catch {
       return {
         type: 'failure',
         error: `Something went wrong. Failed to ${action} user`,
       }
+    }
+
+    await refresh()
+
+    return {
+      type: 'success',
+      data: response,
     }
   }
 
@@ -60,7 +81,14 @@ export function useUsers(options: UseUsersOptions = {}) {
   const rejectUser = (id: ApproveUserPayload) => updateStatus(id, 'reject')
 
   return {
-    users: computed(() => data.value ?? []),
+    users: computed(() => data.value?.items ?? []),
+    pagination: computed(
+      () =>
+        data.value?.pagination ??
+        createEmptyPaginatedResponse<UserManagementUser>(page.value, DEFAULT_PAGE_SIZE).pagination,
+    ),
+    page,
+    setPage: (value: number) => (page.value = value),
     pending,
     error,
     refresh,
