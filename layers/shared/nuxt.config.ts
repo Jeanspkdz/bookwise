@@ -12,6 +12,9 @@ export default defineNuxtConfig({
   ],
   vite: {
     plugins: [vidstack()],
+    optimizeDeps: {
+      include: ['@vueuse/core', '@vueuse/router'],
+    },
   },
   vue: {
     compilerOptions: {
