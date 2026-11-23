@@ -125,7 +125,7 @@ const {
   pending,
   error,
   refresh,
-} = useBooks({ search: true, pageSize: 12, sort: 'name' })
+} = useBooks({ search: true, syncToUrl: true, pageSize: 12, sort: 'name' })
 const searchFields = [
   { label: 'All fields', value: 'all' },
   { label: 'Title', value: 'name' },

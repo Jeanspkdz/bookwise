@@ -66,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+import { refDebounced } from '@vueuse/core'
 import { useUserStore } from '~~/layers/shared/app/stores/useUserStore'
 
 definePageMeta({
@@ -73,16 +74,9 @@ definePageMeta({
 })
 
 const search = ref('')
-const debouncedSearch = ref('')
+const debounced = refDebounced(search, 250)
+const debouncedSearch = computed(() => debounced.value.trim())
 const userStore = useUserStore()
-
-watch(search, (value, _, onCleanup) => {
-  const timeout = setTimeout(() => {
-    debouncedSearch.value = value.trim()
-  }, 250)
-
-  onCleanup(() => clearTimeout(timeout))
-})
 
 const filters = computed<GetUsersFilters>(() => ({
   status: 'all',

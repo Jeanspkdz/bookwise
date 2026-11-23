@@ -13,7 +13,7 @@ type UseUsersOptions = {
 export function useUsers(options: UseUsersOptions = {}) {
   const { fetchUsers = false } = options
   const filters = computed(() => toValue(options.filters) ?? {})
-  const page = ref(1)
+  const { page, setPage, watchTotalPages } = usePagination([() => JSON.stringify(filters.value)])
   const query = computed(() => ({
     ...filters.value,
     page: page.value,
@@ -34,23 +34,7 @@ export function useUsers(options: UseUsersOptions = {}) {
     },
   )
 
-  watch(
-    () => JSON.stringify(filters.value),
-    () => {
-      page.value = 1
-    },
-  )
-
-  watch(
-    () => data.value?.pagination.totalPages,
-    (totalPages) => {
-      const lastPage = Math.max(1, totalPages ?? 1)
-
-      if (page.value > lastPage) {
-        page.value = lastPage
-      }
-    },
-  )
+  watchTotalPages(() => data.value?.pagination.totalPages)
 
   const updateStatus = async (
     id: ApproveUserPayload,
@@ -88,7 +72,7 @@ export function useUsers(options: UseUsersOptions = {}) {
         createEmptyPaginatedResponse<UserManagementUser>(page.value, DEFAULT_PAGE_SIZE).pagination,
     ),
     page,
-    setPage: (value: number) => (page.value = value),
+    setPage,
     pending,
     error,
     refresh,

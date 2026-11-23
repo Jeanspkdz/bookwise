@@ -3,7 +3,7 @@ import { DEFAULT_PAGE_SIZE } from '~~/layers/shared/shared/utils/constants'
 import { createEmptyPaginatedResponse } from '~~/layers/shared/shared/utils/pagination'
 
 export function useAdminBookCatalog() {
-  const page = ref(1)
+  const { page, setPage, resetPage, watchTotalPages } = usePagination()
   const sort = ref<'author' | 'rating' | 'category' | 'name' | 'createdAt'>('createdAt')
   const order = ref<'asc' | 'desc'>('asc')
   const { data, pending, error, refresh } = useFetch<PaginatedResponse<Book>>('/api/book', {
@@ -22,16 +22,7 @@ export function useAdminBookCatalog() {
     },
   })
 
-  watch(
-    () => data.value?.pagination.totalPages,
-    (totalPages) => {
-      const lastPage = Math.max(1, totalPages ?? 1)
-
-      if (page.value > lastPage) {
-        page.value = lastPage
-      }
-    },
-  )
+  watchTotalPages(() => data.value?.pagination.totalPages)
 
   return {
     books: computed(() => data.value?.items ?? []),
@@ -41,11 +32,11 @@ export function useAdminBookCatalog() {
         createEmptyPaginatedResponse<Book>(page.value, DEFAULT_PAGE_SIZE).pagination,
     ),
     page,
-    setPage: (value: number) => (page.value = value),
+    setPage,
     setSort: (field: typeof sort.value, direction: typeof order.value) => {
       sort.value = field
       order.value = direction
-      page.value = 1
+      resetPage()
     },
     pending,
     error,
