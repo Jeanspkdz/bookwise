@@ -93,7 +93,7 @@ const desktopNavItems = computed(() => {
     },
     {
       label: 'Search',
-      to: '#',
+      to: '/search',
       active: currentPath.startsWith('/search'),
     },
   ]

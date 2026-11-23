@@ -16,6 +16,8 @@ const routeQueryValidator = z
     order: z.enum(['asc', 'desc']).default('asc'),
     category: z.string().trim().min(1).optional(),
     exclude: z.string().optional(),
+    search: z.string().trim().max(200).optional(),
+    searchBy: z.enum(['all', 'name', 'author', 'category']).default('all'),
   })
   .extend(paginationQuerySchema.shape)
 
@@ -31,9 +33,11 @@ export default defineCachedEventHandler(
       })
     }
 
-    const { featured, category, exclude, page, pageSize, sort, order } = result.data
+    const { featured, category, exclude, page, pageSize, sort, order, search, searchBy } =
+      result.data
     const { limit, offset } = getPaginationParams({ page, pageSize })
     const query = new BookQueryBuilder()
+      .search(search, searchBy)
       .category(category)
       .exclude(exclude)
       .sortBy(sort, order)

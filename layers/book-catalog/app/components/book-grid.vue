@@ -7,7 +7,7 @@
       class="focus-visible:outline-primary w-[170px] rounded-lg focus-visible:outline-2 focus-visible:outline-offset-8"
     >
       <BookCatalogBookCard
-        :name="book.name"
+        :name="showAuthor ? `${book.name} - By ${book.author}` : book.name"
         :category="book.category"
         :cover-url="book.imageUrl"
         :cover-color="book.coverColor"
@@ -18,5 +18,5 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ books: Book[] }>()
+defineProps<{ books: Book[]; showAuthor?: boolean }>()
 </script>

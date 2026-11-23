@@ -1,4 +1,4 @@
-import { and, asc, desc, getColumns, ilike, ne } from 'drizzle-orm'
+import { and, asc, desc, getColumns, ilike, ne, or } from 'drizzle-orm'
 import type { SQL } from 'drizzle-orm'
 import { z } from 'zod'
 import { bookSchema } from '~~/layers/shared/server/db/schema/book.schema'
@@ -14,6 +14,16 @@ export class BookQueryBuilder {
   private filters: SQL[] = []
   private sort: SortableBookField = 'createdAt'
   private order: 'asc' | 'desc' = 'asc'
+
+  search(value?: string, field: 'all' | 'name' | 'author' | 'category' = 'all') {
+    if (value) {
+      const pattern = `%${value.replace(/[\\%_]/g, '\\$&')}%`
+      const fields = field === 'all' ? (['name', 'author', 'category'] as const) : [field]
+      const filter = or(...fields.map((key) => ilike(bookColumns[key], pattern)))
+      if (filter) this.filters.push(filter)
+    }
+    return this
+  }
 
   category(value?: string) {
     if (value) this.filters.push(ilike(bookColumns.category, value))
