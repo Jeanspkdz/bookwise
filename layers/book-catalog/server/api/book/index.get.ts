@@ -2,10 +2,10 @@ import { count, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { bookSchema } from '~~/layers/shared/server/db/schema/book.schema'
 import {
-  createPaginatedResponse,
   getPaginationParams,
   paginationQuerySchema,
 } from '~~/layers/shared/server/utils/pagination'
+import { createPaginatedResponse } from '~~/layers/shared/shared/utils/pagination'
 
 import { BookQueryBuilder, sortableBookFieldSchema } from '../../utils/book-query'
 

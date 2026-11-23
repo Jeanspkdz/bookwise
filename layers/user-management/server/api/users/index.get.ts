@@ -3,10 +3,10 @@ import { z } from 'zod'
 import { getServerSession } from '~~/layers/auth/server/utils/session'
 import { user } from '~~/layers/shared/server/db/schema/auth.schema'
 import {
-  createPaginatedResponse,
   getPaginationParams,
   paginationQuerySchema,
 } from '~~/layers/shared/server/utils/pagination'
+import { createPaginatedResponse } from '~~/layers/shared/shared/utils/pagination'
 
 const routeQueryValidator = z
   .object({
