@@ -108,11 +108,17 @@ const route = useRoute()
 const bookId = computed(() => String(route.params.id ?? ''))
 const { book, pending, error, refresh } = useBookDetail(bookId, { lazy: false })
 const {
-  similarBooks,
+  books: similarBooks,
   pending: similarPending,
   error: similarError,
   refresh: refreshSimilar,
-} = useSimilarBooks(bookId, () => book.value?.category)
+} = useBooks({
+  category: () => book.value?.category,
+  exclude: bookId,
+  pageSize: 6,
+  enabled: () => Boolean(book.value?.category),
+  lazy: false,
+})
 const summaryParagraphs = computed(
   () =>
     book.value?.summary
