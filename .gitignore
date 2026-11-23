@@ -26,3 +26,7 @@ logs
 !.env.example
 
 opencode.json
+
+# Local migration scripts and reports
+/reports/
+/scripts/
