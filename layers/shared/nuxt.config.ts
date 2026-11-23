@@ -3,7 +3,7 @@ import { join, resolve } from 'node:path'
 import { vite as vidstack } from 'vidstack/plugins'
 export default defineNuxtConfig({
   css: [join(import.meta.dirname, 'app', 'assets', 'css', 'main.css')],
-  modules: ['@nuxt/ui', '@pinia/nuxt'],
+  modules: ['@nuxt/ui', '@nuxt/image', '@pinia/nuxt'],
   components: [
     {
       path: join(import.meta.dirname, 'app', 'components'),
@@ -20,6 +20,11 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     databaseUrl: 'DEFAULT_VALUE', // NUXT_DATABASE_URL -> private
+  },
+  routeRules: {
+    '/dashboard/**': {
+      appLayout: 'dashboard-layout',
+    },
   },
   icon: {
     mode: 'svg',
