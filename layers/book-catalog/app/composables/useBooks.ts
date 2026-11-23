@@ -1,4 +1,4 @@
-import { toValue } from 'vue'
+import { isRef, toValue } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
 import type { PaginatedResponse } from '~~/layers/shared/shared/types/pagination'
 import { DEFAULT_PAGE_SIZE } from '~~/layers/shared/shared/utils/constants'
@@ -25,7 +25,8 @@ export function useBooks(options: UseBooksOptions = {}) {
       enabled: options.search ?? false,
       defaultSearchBy: 'all',
       syncToUrl: options.syncToUrl,
-      searchFields: ['all', 'name', 'author', 'category'],
+      searchFields: options.syncToUrl ? ['all'] : ['all', 'name', 'author', 'category'],
+      filters: isRef(options.category) ? { category: options.category } : undefined,
     })
 
   const enabled = computed(() => toValue(options.enabled) ?? true)

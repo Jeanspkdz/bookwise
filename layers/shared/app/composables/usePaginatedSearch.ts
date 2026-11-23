@@ -1,7 +1,7 @@
 import { useDebounceFn } from '@vueuse/core'
 import { useRouteQuery } from '@vueuse/router'
 import { computed, onScopeDispose, ref, shallowRef, watch } from 'vue'
-import type { ShallowRef } from 'vue'
+import type { Ref, ShallowRef } from 'vue'
 
 interface PaginatedSearchOptions<TField extends string> {
   enabled?: boolean
@@ -9,6 +9,7 @@ interface PaginatedSearchOptions<TField extends string> {
   delay?: number
   syncToUrl?: boolean
   searchFields?: readonly TField[]
+  filters?: Record<string, Ref<string | undefined>>
 }
 
 // Shares debounced search and pagination, optionally restoring and syncing URL parameters.
@@ -18,6 +19,7 @@ export function usePaginatedSearch<TField extends string>(options: PaginatedSear
   const applied = ref('')
   const appliedSearch = computed(() => applied.value)
   const { page, setPage, resetPage } = usePagination()
+  const filters = Object.entries(options.filters ?? {})
   let restoringRoute = false
   let disposed = false
 
@@ -39,7 +41,7 @@ export function usePaginatedSearch<TField extends string>(options: PaginatedSear
 
   if (options.enabled !== false) {
     watch(
-      [appliedSearch, searchBy],
+      [appliedSearch, searchBy, ...filters.map(([, value]) => value)],
       () => {
         if (!restoringRoute) resetPage()
       },
@@ -73,26 +75,49 @@ export function usePaginatedSearch<TField extends string>(options: PaginatedSear
         set: (value: number) => String(value),
       },
     })
+    const urlFilters = filters.map(([key, value]) => ({
+      value,
+      query: useRouteQuery(key, '', {
+        ...routeOptions,
+        transform: (raw: unknown) => (typeof raw === 'string' ? raw.trim() : ''),
+      }),
+    }))
 
     const restoreRoute = (): void => {
+      // Ignore our own URL writes so changing a filter doesn't erase text still being typed.
+      if (
+        applied.value === urlSearch.value &&
+        searchBy.value === urlSearchBy.value &&
+        page.value === urlPage.value &&
+        urlFilters.every((filter) => (filter.value.value ?? '') === filter.query.value)
+      )
+        return
       restoringRoute = true
       applySearch.cancel?.()
       search.value = urlSearch.value
       applied.value = urlSearch.value
       searchBy.value = urlSearchBy.value
+      for (const filter of urlFilters) filter.value.value = filter.query.value || undefined
       setPage(urlPage.value)
       restoringRoute = false
     }
 
-    watch([urlSearch, urlSearchBy, urlPage], restoreRoute)
+    watch(
+      [urlSearch, urlSearchBy, urlPage, ...urlFilters.map((filter) => filter.query)],
+      restoreRoute,
+    )
     restoreRoute()
 
     watch(
-      [appliedSearch, searchBy, page],
-      ([text, field, currentPage]) => {
-        if (urlSearch.value !== text) urlSearch.value = text
-        if (urlSearchBy.value !== field) urlSearchBy.value = field
-        if (urlPage.value !== currentPage) urlPage.value = currentPage
+      [appliedSearch, searchBy, page, ...filters.map(([, value]) => value)],
+      () => {
+        if (urlSearch.value !== appliedSearch.value) urlSearch.value = appliedSearch.value
+        if (urlSearchBy.value !== searchBy.value) urlSearchBy.value = searchBy.value
+        if (urlPage.value !== page.value) urlPage.value = page.value
+        for (const filter of urlFilters) {
+          const value = filter.value.value ?? ''
+          if (filter.query.value !== value) filter.query.value = value
+        }
       },
       { flush: 'post' },
     )
@@ -103,6 +128,7 @@ export function usePaginatedSearch<TField extends string>(options: PaginatedSear
     applySearch.cancel?.()
     applied.value = ''
     searchBy.value = options.defaultSearchBy
+    for (const [, value] of filters) value.value = undefined
     resetPage()
   }
 

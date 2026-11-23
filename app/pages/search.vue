@@ -41,21 +41,7 @@
             </template>
             <template v-else>Search Results</template>
           </h2>
-          <div class="bg-secondary-800 flex items-center gap-2 rounded px-4 py-1">
-            <label
-              for="search-field"
-              class="text-secondary-200 text-sm"
-              >Filter by:</label
-            >
-            <USelect
-              id="search-field"
-              v-model="searchBy"
-              :items="searchFields"
-              variant="none"
-              class="w-32"
-              :ui="{ base: 'text-primary font-semibold' }"
-            />
-          </div>
+          <BookCatalogCategoryFilter v-model="category" />
         </div>
 
         <div
@@ -114,22 +100,7 @@
 definePageMeta({ layout: 'home-layout' })
 useSeoMeta({ title: 'Search books | BookWise' })
 
-const {
-  search,
-  appliedSearch,
-  clearSearch,
-  searchBy,
-  page,
-  books,
-  pagination,
-  pending,
-  error,
-  refresh,
-} = useBooks({ search: true, syncToUrl: true, pageSize: 12, sort: 'name' })
-const searchFields = [
-  { label: 'All fields', value: 'all' },
-  { label: 'Title', value: 'name' },
-  { label: 'Author', value: 'author' },
-  { label: 'Category', value: 'category' },
-]
+const category = ref<string | undefined>()
+const { search, appliedSearch, clearSearch, page, books, pagination, pending, error, refresh } =
+  useBooks({ search: true, syncToUrl: true, category, pageSize: 12, sort: 'name' })
 </script>

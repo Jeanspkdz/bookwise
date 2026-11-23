@@ -26,7 +26,7 @@ export class BookQueryBuilder {
   }
 
   category(value?: string) {
-    if (value) this.filters.push(ilike(bookColumns.category, value))
+    if (value) this.filters.push(ilike(bookColumns.category, value.replace(/[\\%_]/g, '\\$&')))
     return this
   }
 
