@@ -1,4 +1,4 @@
-import { isRef, toValue } from 'vue'
+import { toValue } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
 import type { PaginatedResponse } from '~~/layers/shared/shared/types/pagination'
 import { DEFAULT_PAGE_SIZE } from '~~/layers/shared/shared/utils/constants'
@@ -8,8 +8,9 @@ type BookSearchField = 'all' | 'name' | 'author' | 'category'
 
 interface UseBooksOptions {
   pageSize?: number
-  search?: boolean
-  syncToUrl?: boolean
+  search?: MaybeRefOrGetter<string | undefined>
+  searchBy?: MaybeRefOrGetter<BookSearchField>
+  page?: MaybeRefOrGetter<number>
   sort?: string
   order?: 'asc' | 'desc'
   category?: MaybeRefOrGetter<string | undefined>
@@ -20,19 +21,12 @@ interface UseBooksOptions {
 
 export function useBooks(options: UseBooksOptions = {}) {
   const pageSize = options.pageSize ?? DEFAULT_PAGE_SIZE
-  const { search, appliedSearch, searchBy, page, setPage, clearSearch } =
-    usePaginatedSearch<BookSearchField>({
-      enabled: options.search ?? false,
-      defaultSearchBy: 'all',
-      syncToUrl: options.syncToUrl,
-      searchFields: options.syncToUrl ? ['all'] : ['all', 'name', 'author', 'category'],
-      filters: isRef(options.category) ? { category: options.category } : undefined,
-    })
+  const page = computed(() => toValue(options.page) ?? 1)
 
   const enabled = computed(() => toValue(options.enabled) ?? true)
   const query = computed(() => ({
-    search: options.search ? appliedSearch.value || undefined : undefined,
-    searchBy: options.search ? searchBy.value : undefined,
+    search: toValue(options.search) || undefined,
+    searchBy: toValue(options.searchBy) ?? 'all',
     category: toValue(options.category),
     exclude: toValue(options.exclude),
     page: page.value,
@@ -45,7 +39,7 @@ export function useBooks(options: UseBooksOptions = {}) {
     query,
     watch: false,
     immediate: enabled.value,
-    lazy: options.lazy ?? !options.search,
+    lazy: options.lazy ?? true,
     default: () => createEmptyPaginatedResponse<Book>(page.value, pageSize),
   })
 
@@ -61,12 +55,6 @@ export function useBooks(options: UseBooksOptions = {}) {
         data.value?.pagination ??
         createEmptyPaginatedResponse<Book>(page.value, pageSize).pagination,
     ),
-    page,
-    setPage,
-    search,
-    appliedSearch,
-    searchBy,
-    clearSearch,
     pending,
     error,
     refresh,

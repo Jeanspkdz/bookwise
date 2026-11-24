@@ -101,6 +101,30 @@ definePageMeta({ layout: 'home-layout' })
 useSeoMeta({ title: 'Search books | BookWise' })
 
 const category = ref<string | undefined>()
-const { search, appliedSearch, clearSearch, page, books, pagination, pending, error, refresh } =
-  useBooks({ search: true, syncToUrl: true, category, pageSize: 12, sort: 'name' })
+const searchState = usePaginatedSearch({ defaultSearchBy: 'all', filters: { category } })
+const { search, appliedSearch, clearSearch, page } = searchState
+
+useQuerySync(
+  () => ({ search: appliedSearch.value, category: category.value ?? '', page: String(page.value) }),
+  {
+    defaults: { search: '', category: '', page: '1' },
+    restore: (values) => {
+      const number = Number(values.page)
+      searchState.restoreState({
+        search: values.search.trim().slice(0, 200),
+        page: Number.isSafeInteger(number) && number > 0 ? number : 1,
+        filters: { category: values.category.trim() || undefined },
+      })
+    },
+  },
+)
+
+const { books, pagination, pending, error, refresh } = useBooks({
+  search: appliedSearch,
+  category,
+  page,
+  pageSize: 12,
+  sort: 'name',
+  lazy: false,
+})
 </script>
